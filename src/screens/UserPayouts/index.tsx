@@ -93,9 +93,7 @@ export default function UserPayouts(props: any) {
           <Text style={{ fontSize: 22 }}>{'Recent Transactions'}</Text>
         </View>
 
-        {/* <Card style={{
-                padding: 5
-              }}> */}
+        
         {/* <Icon
           name={"sort"}
           color={"black"}
@@ -105,7 +103,6 @@ export default function UserPayouts(props: any) {
             RBSortingSheetRef.current.open();
           }}
         /> */}
-        {/* </Card> */}
       </View>
     );
   }
@@ -158,11 +155,6 @@ export default function UserPayouts(props: any) {
           contentContainerStyle={{ paddingBottom: 10 }}
           renderItem={({ item, index }) => {
             return (
-              // <Card style={{
-              //   backgroundColor: "#FAFAFA",
-              //   marginHorizontal: 2,
-              //   marginVertical: 5
-              // }}>
                 <View style={{
                   paddingTop: 10,
                 }}>
@@ -193,12 +185,10 @@ export default function UserPayouts(props: any) {
                       </View>
                     </View>
 
-
                   </View>
 
                   <View style={styles.divider} />
                 </View>
-              // </Card>
             );
           }}
           keyExtractor={(item, index) => index.toString()}
@@ -249,9 +239,7 @@ export default function UserPayouts(props: any) {
                 }}>
                   <View
                     style={{
-                      // height: hp(10),
                       flex: 1,
-                      // borderRadius: 14,
                       paddingRight: 5
 
                     }}
@@ -263,8 +251,6 @@ export default function UserPayouts(props: any) {
                         justifyContent: 'center',
                         alignItems: 'center',
                         backgroundColor: "#BDBDBD",
-                        // borderColor: '#4F4F4F',
-                        // borderWidth: 1,
                         borderRadius: wp(16),
                       }}>
                         <Image
@@ -289,7 +275,6 @@ export default function UserPayouts(props: any) {
                             style={{
                               fontWeight: "500",
                               fontSize: 20,
-                              // marginBottom: hp(0.5),
                             }}
                           >
                             {payouts?.method == "crypto"
@@ -308,18 +293,8 @@ export default function UserPayouts(props: any) {
                           <Text style={{ fontWeight: '600', color: "green" }}>{payouts?.region}</Text>
                           
                         </View>
-
-                        {/* <View
-                          style={{ flexDirection: 'row', justifyContent: "center", alignItems: "center" }}
-                        >
-                          
-
-                        </View> */}
-
                       </View>
                     </View>
-
-                    {/* <View style={styles.divider} /> */}
                   </View>
                   <View style={{
                     justifyContent: 'center',
@@ -425,7 +400,6 @@ const styles = StyleSheet.create({
   buttonContainer: {
     alignItems: "center",
     backgroundColor: "white",
-    // marginBottom: hp(3),
     paddingHorizontal: hp(2.5),
   },
   bankName: {
@@ -442,7 +416,5 @@ const styles = StyleSheet.create({
   bankIcon: {
     height: wp(10),
     width: wp(10),
-    // alignSelf: "center",
-    // marginRight: hp(1),
   },
 });
