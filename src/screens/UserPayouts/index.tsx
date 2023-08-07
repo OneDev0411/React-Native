@@ -1,6 +1,6 @@
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { useIsFocused } from "@react-navigation/native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, FlatList, Image, RefreshControl, StyleSheet, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -11,8 +11,9 @@ import Text from "../../../components/Text";
 import {
   useDeletePayoutMethodMutation,
   useGetPayoutMethodQuery,
+  useGetPayoutsQuery,
 } from "../../../redux/user/userApiSlice";
-import { hp, wp } from "../../../utils";
+import { formatDateTime, hp, wp } from "../../../utils";
 
 
 export default function UserPayouts(props: any) {
@@ -25,6 +26,34 @@ export default function UserPayouts(props: any) {
     isLoading,
     refetch,
   } = useGetPayoutMethodQuery();
+
+  const [page, setPage] = useState(1);
+  const [payoutsListData, setPayoutsListData] = useState([]);
+
+  const {
+    data: payoutsData,
+    isError: pauoutsIsError,
+    isLoading: payoutsIsLoading,
+    refetch: refetchPayouts,
+  } = useGetPayoutsQuery({ page: page, limit: 20, sortBy: 'createdAt:desc' });
+
+  useEffect(() => {
+
+    if (page === 1) {
+      setPayoutsListData((!!payoutsData && !!payoutsData.results && payoutsData.results.length > 0) ? (payoutsData.results) : ([]));
+    } else if (!!payoutsData && !!payoutsData.results && payoutsData.results.length > 0) {
+
+      setPayoutsListData(payoutsListData.concat(payoutsData.results));
+    }
+  }, [payoutsData])
+
+  useEffect(() => {
+    if (page === 1) {
+      refetchPayouts();
+    }
+  }, [page])
+
+
 
   const [deletePayoutMethod, deletePayoutMethodResp] =
     useDeletePayoutMethodMutation();
@@ -81,50 +110,20 @@ export default function UserPayouts(props: any) {
     );
   }
 
+  const handleLoadMore = () => {
+    if (!payoutsIsLoading && !pauoutsIsError && (!!payoutsListData && !!payoutsListData) ? payoutsListData.length > 0 : false) {
+      setPage(page + 1);
+    }
+  };
   //REMARK: Recent Transaction Flat List View
   const renderRecentTransactionListView = () => {
     return (
       <View style={{
         flex: 1,
+        marginTop: 5
       }}>
         <FlatList
-          data={[
-            {
-              id: 0,
-              name: "Test1"
-            }, {
-              id: 1,
-              name: "Test1"
-            },
-            {
-              id: 2,
-              name: "Test1"
-            },
-            {
-              id: 3,
-              name: "Test1"
-            },
-            {
-              id: 4,
-              name: "Test1"
-            },
-            {
-              id: 5,
-              name: "Test1"
-            },
-            {
-              id: 6,
-              name: "Test1"
-            },
-            {
-              id: 7,
-              name: "Test1"
-            },
-            {
-              id: 8,
-              name: "Test1"
-            }
-          ]}
+          data={payoutsListData}
           style={{
             // marginVertical: RFValue(20),
             // flex: 1,
@@ -138,17 +137,25 @@ export default function UserPayouts(props: any) {
                     <Image
                       style={styles.bankIcon}
                       resizeMode="contain"
-                      source={require("../../../assets/images/money.png")}
+                      source={
+                        item?.method == "cash"
+                          ? require("../../../assets/images/money.png")
+                          : item?.method == "bank"
+                            ? require("../../../assets/images/bank.png")
+                            : item?.method == "crypto"
+                              ? require("../../../assets/images/crypto.jpg")
+                              : require("../../../assets/images/paypal.png")
+                      }
                     />
                   </View>
 
-                  <View style={{ flex: 0.6, alignItems: 'flex-start', }}>
+                  <View style={{ flex: 0.5, alignItems: 'flex-start', }}>
                     <Text style={{ fontSize: 16 }}>{'Payout'}</Text>
-                    <Text style={{ fontSize: 14 }}>{'9 Jun, 23 11:30pm'}</Text>
+                    <Text style={{ fontSize: 14 }}>{formatDateTime(item?.createdAt)}</Text>
                   </View>
 
-                  <View style={{ flex: 0.2, alignItems: 'center', }}>
-                    <Text style={{ fontSize: 16, color: 'green' }}>{'RS 10000'}</Text>
+                  <View style={{ flex: 0.3, alignItems: 'flex-end' }}>
+                    <Text style={{ fontSize: 16, color: 'green', }}>{item.currency + ' ' + item.amount}</Text>
                   </View>
 
 
@@ -165,22 +172,21 @@ export default function UserPayouts(props: any) {
               titleColor={'#000000'}
               refreshing={false}
               onRefresh={() => {
-                // applyFilter(true);
+                setPage(1);
               }}
             />
           }
-          ListFooterComponent={
-            null
-          }
-          onEndReached={() => {
+          ListFooterComponent={payoutsIsLoading && <Text style={{
+            color: 'black'
+          }}>Loading more...</Text>}
 
-          }}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.1}
         />
       </View>
 
     );
   }
-
 
   return (
     <>
