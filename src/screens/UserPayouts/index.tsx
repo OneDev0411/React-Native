@@ -87,7 +87,7 @@ export default function UserPayouts(props: any) {
   //REMARK: Recent Transaction And Sorting View
   const renderRecentTransactionAndSortingView = () => {
     return (
-      <View style={{ justifyContent: 'space-between', marginTop: 20, flexDirection: 'row' }}>
+      <View style={{ justifyContent: 'space-between', marginTop: 20, marginBottom: 5, flexDirection: 'row' }}>
 
         <View style={{ justifyContent: "center" }} >
           <Text style={{ fontSize: 22 }}>{'Recent Transactions'}</Text>
@@ -96,7 +96,7 @@ export default function UserPayouts(props: any) {
         {/* <Card style={{
                 padding: 5
               }}> */}
-        <Icon
+        {/* <Icon
           name={"sort"}
           color={"black"}
           size={30}
@@ -104,7 +104,7 @@ export default function UserPayouts(props: any) {
             setSortValueForModal(sortValue);
             RBSortingSheetRef.current.open();
           }}
-        />
+        /> */}
         {/* </Card> */}
       </View>
     );
@@ -148,7 +148,7 @@ export default function UserPayouts(props: any) {
     return (
       <View style={{
         flex: 1,
-        marginTop: 10
+        
       }}>
         <FlatList
           data={payoutsListData}
@@ -158,15 +158,15 @@ export default function UserPayouts(props: any) {
           contentContainerStyle={{ paddingBottom: 10 }}
           renderItem={({ item, index }) => {
             return (
-              <Card style={{
-                backgroundColor: "#FAFAFA",
-                marginHorizontal: 2,
-                marginVertical: 5
-              }}>
+              // <Card style={{
+              //   backgroundColor: "#FAFAFA",
+              //   marginHorizontal: 2,
+              //   marginVertical: 5
+              // }}>
                 <View style={{
-                  paddingVertical: 10,
+                  paddingTop: 10,
                 }}>
-                  <View style={{ flexDirection: 'row', paddingHorizontal: 10 }}>
+                  <View style={{ flexDirection: 'row', }}>
                     <View style={{
                       flex: 0.2,
                     }}>
@@ -189,15 +189,16 @@ export default function UserPayouts(props: any) {
                         paddingHorizontal: 10,
                         paddingVertical: 3
                       }}>
-                        <Text numberOfLines={1} style={{ fontSize: 16, color: '#2FBC44', }}>{item.currency + ' ' + item.amount}</Text>
+                        <Text numberOfLines={1} style={{ fontWeight: '600', fontSize: 16, color: 'green', }}>{item.currency + ' ' + item.amount}</Text>
                       </View>
                     </View>
 
 
                   </View>
 
+                  <View style={styles.divider} />
                 </View>
-              </Card>
+              // </Card>
             );
           }}
           keyExtractor={(item, index) => index.toString()}
@@ -295,6 +296,7 @@ export default function UserPayouts(props: any) {
                               ? "Anonymous"
                               : payouts?.accountHolder}
                           </Text>
+                          
                           {payouts?.method == "crypto" ? (
                             <Text style={styles.bankName}>{payouts?.routing}</Text>
                           ) : null}
@@ -303,14 +305,16 @@ export default function UserPayouts(props: any) {
                           }]}>
                             {payouts?.bankName} - {payouts?.account}
                           </Text>
+                          <Text style={{ fontWeight: '600', color: "green" }}>{payouts?.region}</Text>
+                          
                         </View>
 
-                        <View
+                        {/* <View
                           style={{ flexDirection: 'row', justifyContent: "center", alignItems: "center" }}
                         >
-                          <Text style={{ color: "#2FBC44" }}>{payouts?.region}</Text>
+                          
 
-                        </View>
+                        </View> */}
 
                       </View>
                     </View>
@@ -352,7 +356,7 @@ export default function UserPayouts(props: any) {
 
         </View>
 
-        <RBSheet
+        {/* <RBSheet
           ref={RBSortingSheetRef}
           openDuration={250}
           customStyles={{
@@ -382,7 +386,7 @@ export default function UserPayouts(props: any) {
               {t("Apply")}
             </Text>
           </MyButton>
-        </RBSheet>
+        </RBSheet> */}
       </View>
     </>
   );
@@ -433,7 +437,7 @@ const styles = StyleSheet.create({
     height: wp(0.2),
     width: "100%",
     backgroundColor: "#DEDEDE",
-    marginTop: 15
+    marginTop: 10
   },
   bankIcon: {
     height: wp(10),
