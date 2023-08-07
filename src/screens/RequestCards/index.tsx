@@ -74,7 +74,6 @@ export default function RequestCards(props) {
 
   const createCardReuest = async (values: object) => {
     try {
-      console.log("fff");
       if (values?.cards_amount <= 50) {
         const resp = await requestRefillCards(values);
 
@@ -103,7 +102,10 @@ export default function RequestCards(props) {
       keyboardShouldPersistTaps="always"
       showsVerticalScrollIndicator={false}
     >
-      <Header title={t("Create New Request Card")} />
+      <Header
+        title={t("Create New Request Card")}
+        leftButton={() => props.navigation.goBack()}
+      />
       <View style={styles.inputContainer}>
         <Formik
           innerRef={_formik}
@@ -134,13 +136,6 @@ export default function RequestCards(props) {
                 style={styles.inputViewStyle}
                 onPress={() => setShow(true)}
               >
-                {countryCode ? (
-                  <Text style={{ width: "20%", marginLeft: 10 }}>
-                    {countryFlag}
-                  </Text>
-                ) : (
-                  <Text style={{ width: "15%", marginLeft: 10 }}>🏳️ </Text>
-                )}
                 <Input
                   // onChangeText={handleChange("country")}
                   editable={false}
@@ -148,7 +143,6 @@ export default function RequestCards(props) {
                   value={values.country}
                   style={{
                     ...styles.inputField,
-                    width: countryCode ? "95%" : "90%",
                   }}
                   icon
                   iconColor={"#ccc"}
@@ -157,7 +151,6 @@ export default function RequestCards(props) {
                     ...styles.inputViewStyle,
 
                     marginTop: 10,
-                    width: countryCode ? "70%" : "80%",
                   }}
                   autoCapitalize={"none"}
                   placeholder={t("select your country")}
@@ -263,7 +256,6 @@ export default function RequestCards(props) {
             style={styles.button}
             onPress={() => {
               _formik.current.handleSubmit();
-              console.log("ddaa", _formik.current.values);
             }}
             isLoading={isLoading}
             disabled={isLoading}
@@ -278,17 +270,26 @@ export default function RequestCards(props) {
         show={show}
         style={{
           modal: {
-            height: 500,
+            marginTop: 300,
+            height: 350,
           },
         }}
         onBackdropPress={() => setShow(false)}
         onRequestClose={() => setShow(false)}
-        pickerButtonOnPress={(item) => {
-          console.log("item here", item);
-          setCountryCode(item?.name?.en);
-          setCountryFlag(item.flag);
-          setShow(false);
-        }}
+        itemTemplate={(item) => (
+          <TouchableOpacity
+            onPress={() => {
+              setCountryCode(item.name);
+              setShow(false);
+            }}
+            style={{ margin: 5, flex: 1, backgroundColor: "white" }}
+          >
+            <View style={styles.countryContainer}>
+              <Text>{item.item.flag}</Text>
+              <Text style={{ marginLeft: 15 }}>{item.name}</Text>
+            </View>
+          </TouchableOpacity>
+        )}
       />
     </ScrollView>
   ) : (
@@ -297,7 +298,10 @@ export default function RequestCards(props) {
       keyboardShouldPersistTaps="always"
       showsVerticalScrollIndicator={false}
     >
-      <Header title={t("Create New Request Card")} />
+      <Header
+        title={t("Pending Cards")}
+        leftButton={() => props.navigation.goBack()}
+      />
       <View style={{ padding: 15 }}>
         <Text style={{ fontSize: 14, fontWeight: "500" }}>
           {t("You need to sell")} {cards_pending}{" "}
@@ -305,14 +309,7 @@ export default function RequestCards(props) {
             "more cards in order to request new cards. Only paid sales are taken into account.",
           )}
         </Text>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginTop: 50,
-            marginHorizontal: 10,
-          }}
-        >
+        <View style={styles.statusContainer}>
           <Text style={{ color: "green", fontSize: 12, fontWeight: "600" }}>
             {t("Sold")}: {cards_sold}
           </Text>
@@ -330,21 +327,20 @@ export default function RequestCards(props) {
           <Progress.Bar
             progress={progress !== 0 ? progress / 100 : 0}
             width={300}
-            height={8}
+            height={15}
             color={tintColorDark}
             unfilledColor={"#d1d1d1"}
-            borderWidth={0}
+            borderWidth={1}
           />
           <Text style={{ color: "black", fontSize: 12, fontWeight: "600" }}>
             {progress}% {t("sold")}
           </Text>
         </View>
       </View>
-
       <View
         style={[
           styles.buttonContainer,
-          { marginTop: 400, marginHorizontal: 15 },
+          { marginTop: 380, marginBottom: 10, marginHorizontal: 15 },
         ]}
       >
         <Button
@@ -367,10 +363,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     height: "100%",
+    backgroundColor: "white",
   },
   inputContainer: {
     paddingHorizontal: 20,
     marginTop: 30,
+  },
+  countryContainer: {
+    flexDirection: "row",
+    backgroundColor: "#f9f9f9",
+    padding: 10,
+    borderRadius: 10,
   },
   credsFont: {
     fontWeight: "700",
@@ -387,6 +390,12 @@ const styles = StyleSheet.create({
 
     width: "90%",
     color: "black",
+  },
+  statusContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 90,
+    marginHorizontal: 10,
   },
   inputViewStyle: {
     flexDirection: "row",

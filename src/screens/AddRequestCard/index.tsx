@@ -96,7 +96,10 @@ export default function AddRequestCard(props) {
 
   return (
     <View style={styles.container}>
-      <Header title={t("Request Cards")} />
+      <Header
+        title={t("Request Cards")}
+        leftButton={() => props.navigation.goBack()}
+      />
 
       <Button
         onPress={() => props.navigation.navigate("RequestCards")}
