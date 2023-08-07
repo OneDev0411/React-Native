@@ -25,8 +25,10 @@ export default function RequestCards(props) {
   const [show, setShow] = useState(false);
   const [cards_sold, setCardsSold] = useState(0);
   const [cards_pending, setCardsPending] = useState(0);
+  const [progress, setProgress] = useState(0);
   const [countryCode, setCountryCode] = useState("");
   const [countryFlag, setCountryFlag] = useState("");
+  const [isEligible, setEligible] = useState(false);
   const [requestRefillCards, { isLoading }] = useRequestRefillCardsMutation();
   const {
     data: refillEligibilityData,
@@ -42,14 +44,21 @@ export default function RequestCards(props) {
   }, [isFocued]);
 
   useEffect(() => {
-    setCardsSold(refillEligibilityData?.cards_sold);
-    setCardsPending(refillEligibilityData?.cards_pending);
-  }, [isFocued, refillEligibilityData]);
+    if (refillEligibilitySuccess) {
+      setCardsSold(refillEligibilityData?.cards_sold);
+      setCardsPending(refillEligibilityData?.cards_pending);
 
-  const percentage =
-    cards_sold + cards_pending !== 0
-      ? (cards_sold / (cards_sold + cards_pending)) * 100
-      : 0;
+      const total_cards =
+        refillEligibilityData?.cards_sold +
+        refillEligibilityData?.cards_pending;
+      const percentage = (
+        (refillEligibilityData?.cards_sold / total_cards) *
+        100
+      ).toFixed(2);
+      setProgress(Number(percentage));
+      setEligible(refillEligibilityData?.eligible);
+    }
+  }, [refillEligibilityData]);
 
   const validationSchema = yup.object().shape({
     country: yup.string("Required").required("Country is required"),
@@ -88,7 +97,7 @@ export default function RequestCards(props) {
   };
 
   //
-  return refillEligibilityData?.eligible === true ? (
+  return isEligible === true ? (
     <ScrollView
       style={styles.container}
       keyboardShouldPersistTaps="always"
@@ -319,7 +328,7 @@ export default function RequestCards(props) {
           }}
         >
           <Progress.Bar
-            progress={percentage !== null && percentage/100}
+            progress={progress !== 0 ? progress / 100 : 0}
             width={300}
             height={8}
             color={tintColorDark}
@@ -327,7 +336,7 @@ export default function RequestCards(props) {
             borderWidth={0}
           />
           <Text style={{ color: "black", fontSize: 12, fontWeight: "600" }}>
-            {percentage.toFixed(2)}% {t("sold")}
+            {progress}% {t("sold")}
           </Text>
         </View>
       </View>
