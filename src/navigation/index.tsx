@@ -73,6 +73,8 @@ import { useNavigation } from '@react-navigation/native';
 import { Linking } from 'react-native';
 import { setReferralCode } from '../../redux/auth/authSlice';
 import { scheduleSaleReminderNotification } from '../../utils/notifications';
+import AddRequestCard from '../screens/AddRequestCard';
+import RequestCards from '../screens/RequestCards';
 
 function TabStack(props: any) {
 	const { t } = useTranslation();
@@ -180,6 +182,8 @@ function AppStack() {
 
 			<Stack.Screen name="SaleDetail" component={SaleDetail} />
 			<Stack.Screen name="Partners" component={Partners} />
+			<Stack.Screen name="AddRequestCard" component={AddRequestCard} />
+			<Stack.Screen name="RequestCards" component={RequestCards} />
 			<Stack.Screen name="PartnerDetail" component={PartnerDetail} />
 			<Stack.Screen name="UserPayouts" component={UserPayouts} />
 			<Stack.Screen name="Payouts" component={Payouts} />
