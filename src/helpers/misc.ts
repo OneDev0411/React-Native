@@ -9,7 +9,7 @@ export const getCurrencySymbol = (currency: string): string => {
 		case 'AED':
 			return 'AED ';
 		default:
-			return currency;
+			return currency + ' ';
 	}
 };
 
@@ -28,6 +28,8 @@ export const getCurrencyByCountry = (country: {
 }) => {
 	if (country.name == 'United Arab Emirates') return 'AED';
 	if (country.name == 'Morocco') return 'MAD';
+	if (country.name == 'Canada') return 'CAD';
+	if (country.name == 'New Zealand') return 'NZD';
 	if (country.region == 'Europe') return 'EUR';
 	return 'USD';
 };
@@ -68,6 +70,4 @@ export function shortenStringMiddle(str: string, maxLength: number = 10): string
 
 	const mid = Math.floor(maxLength / 2);
 	return str.substring(0, mid) + '...' + str.substring(str.length - mid, str.length);
-
-
 }

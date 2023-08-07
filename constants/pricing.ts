@@ -11,7 +11,13 @@ const pricing: any = {
 		},
 		MAD: {
 			price: 1000,
-		}
+		},
+		CAD: {
+			price: 150,
+		},
+		NZD: {
+			price: 175,
+		},
 	},
 	3: {
 		USD: {
@@ -25,7 +31,13 @@ const pricing: any = {
 		},
 		MAD: {
 			price: 3000,
-		}
+		},
+		CAD: {
+			price: 300,
+		},
+		NZD: {
+			price: 350,
+		},
 	},
 	5: {
 		USD: {
@@ -39,7 +51,13 @@ const pricing: any = {
 		},
 		MAD: {
 			price: 5000,
-		}
+		},
+		CAD: {
+			price: 400,
+		},
+		NZD: {
+			price: 450,
+		},
 	},
 	10: {
 		USD: {
@@ -53,7 +71,13 @@ const pricing: any = {
 		},
 		MAD: {
 			price: 10000,
-		}
+		},
+		CAD: {
+			price: 600,
+		},
+		NZD: {
+			price: 700,
+		},
 	},
 };
 
