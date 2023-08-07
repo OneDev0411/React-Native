@@ -1,11 +1,12 @@
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { useIsFocused } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, FlatList, Image, RefreshControl, StyleSheet, View } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { Card } from 'react-native-paper';
+import { Card, Switch } from 'react-native-paper';
+import RBSheet from "react-native-raw-bottom-sheet";
 import Toast from "react-native-root-toast";
+import MyButton from "../../../components/Button";
 import Header from "../../../components/Header";
 import Text from "../../../components/Text";
 import {
@@ -20,6 +21,8 @@ export default function UserPayouts(props: any) {
   const { t } = useTranslation();
   const focused = useIsFocused();
 
+  const RBSortingSheetRef = useRef();
+
   const {
     data: payouts,
     isError,
@@ -27,6 +30,8 @@ export default function UserPayouts(props: any) {
     refetch,
   } = useGetPayoutMethodQuery();
 
+  const [sortValue, setSortValue] = useState(true);
+  const [sortValueForModal, setSortValueForModal] = useState(true);
   const [page, setPage] = useState(1);
   const [payoutsListData, setPayoutsListData] = useState([]);
 
@@ -35,7 +40,7 @@ export default function UserPayouts(props: any) {
     isError: pauoutsIsError,
     isLoading: payoutsIsLoading,
     refetch: refetchPayouts,
-  } = useGetPayoutsQuery({ page: page, limit: 20, sortBy: 'createdAt:desc' });
+  } = useGetPayoutsQuery({ page: page, limit: 20, sortBy: (sortValue) ? ('createdAt:asc') : ('createdAt:desc') });
 
   useEffect(() => {
 
@@ -48,19 +53,22 @@ export default function UserPayouts(props: any) {
   }, [payoutsData])
 
   useEffect(() => {
+
+    //REMARK: Refresh List on Flatlist onRefresh
     if (page === 1) {
       refetchPayouts();
     }
-  }, [page])
+  }, [page]);
 
+  useEffect(() => {
 
+    //REMARK: Refresh List on sort modal value change
+    refetchPayouts();
+  }, [sortValue]);
 
   const [deletePayoutMethod, deletePayoutMethodResp] =
     useDeletePayoutMethodMutation();
 
-  // useEffect(() => {
-  //   refetch();
-  // }, [focused]);
   const deletePayout = async () => {
     try {
       const resp = await deletePayoutMethod(payouts?.id);
@@ -85,29 +93,49 @@ export default function UserPayouts(props: any) {
           <Text style={{ fontSize: 22 }}>{'Recent Transactions'}</Text>
         </View>
 
-        <TouchableOpacity style={{
-          justifyContent: 'center', alignItems: 'center', height: wp(7),
-          // width: wp(7)
-        }}
-        // onPress={this.onPress}
-        >
-          <Icon
-            name={"sort"}
-            color={"black"}
-            size={30}
-            onPress={() => {
-
-            }}
-          />
-          {/* <Image
-        style={{height: wp(5),
-          width: wp(5)}}
-        resizeMode="contain"
-        source={require("../../../assets/images/money.png")}
-      /> */}
-        </TouchableOpacity>
+        {/* <Card style={{
+                padding: 5
+              }}> */}
+        <Icon
+          name={"sort"}
+          color={"black"}
+          size={30}
+          onPress={() => {
+            setSortValueForModal(sortValue);
+            RBSortingSheetRef.current.open();
+          }}
+        />
+        {/* </Card> */}
       </View>
     );
+  }
+
+  const renderPluginActivationSwitch = () => {
+    return (
+      <View style={{ flex: 1, marginTop: 20, flexDirection: 'row', alignItems: 'center' }}>
+        <View style={{
+          flex: 0.5,
+        }}>
+          <Text style={[{ fontSize: 18, color: '#000' }]}
+            numberOfLines={1}>
+            {'Ascending'}
+          </Text>
+
+        </View>
+        <View style={{
+          flex: 0.5,
+          alignItems: 'flex-end',
+        }}>
+          <Switch
+            value={sortValueForModal}
+            onValueChange={(v) => {
+              setSortValueForModal(v);
+            }}
+            color="#2FBC44"
+          />
+        </View>
+      </View>
+    )
   }
 
   const handleLoadMore = () => {
@@ -120,48 +148,56 @@ export default function UserPayouts(props: any) {
     return (
       <View style={{
         flex: 1,
-        marginTop: 5
+        marginTop: 10
       }}>
         <FlatList
           data={payoutsListData}
           style={{
-            // marginVertical: RFValue(20),
-            // flex: 1,
+
           }}
           contentContainerStyle={{ paddingBottom: 10 }}
           renderItem={({ item, index }) => {
             return (
-              <View>
-                <View style={{ backgroundColor: 'white', marginTop: 20, flexDirection: 'row', paddingVertical: 10 }}>
-                  <View style={{ flex: 0.2, alignSelf: 'center', alignItems: 'center' }}>
-                    <Image
-                      style={styles.bankIcon}
-                      resizeMode="contain"
-                      source={
-                        item?.method == "cash"
-                          ? require("../../../assets/images/money.png")
-                          : item?.method == "bank"
-                            ? require("../../../assets/images/bank.png")
-                            : item?.method == "crypto"
-                              ? require("../../../assets/images/crypto.jpg")
-                              : require("../../../assets/images/paypal.png")
-                      }
-                    />
-                  </View>
+              <Card style={{
+                backgroundColor: "#FAFAFA",
+                marginHorizontal: 2,
+                marginVertical: 5
+              }}>
+                <View style={{
+                  paddingVertical: 10,
+                }}>
+                  <View style={{ flexDirection: 'row', paddingHorizontal: 10 }}>
+                    <View style={{
+                      flex: 0.2,
+                    }}>
 
-                  <View style={{ flex: 0.5, alignItems: 'flex-start', }}>
-                    <Text style={{ fontSize: 16 }}>{'Payout'}</Text>
-                    <Text style={{ fontSize: 14 }}>{formatDateTime(item?.createdAt)}</Text>
-                  </View>
+                      <Icon
+                        name={item?.method == "cash" ? ("cash") : (item?.method == "bank" ? ("bank") : (item?.method == "crypto" ? ("bitcoin") : ("paypal")))}
+                        color={"#ffc000"}
+                        size={60}
+                      />
+                    </View>
 
-                  <View style={{ flex: 0.3, alignItems: 'flex-end' }}>
-                    <Text style={{ fontSize: 16, color: 'green', }}>{item.currency + ' ' + item.amount}</Text>
-                  </View>
+                    <View style={{ flex: 0.4, padding: 5, alignItems: 'flex-start', }}>
+                      <Text style={{ fontSize: 20 }}>{'Payout'}</Text>
+                      <Text style={{ fontSize: 14, marginTop: 1, color: '#8D9683' }}>{formatDateTime(item?.createdAt)}</Text>
+                    </View>
 
+                    <View style={{ flex: 0.4, alignItems: 'flex-end', justifyContent: 'center', }}>
+                      <View style={{
+                        borderRadius: 50,
+                        paddingHorizontal: 10,
+                        paddingVertical: 3
+                      }}>
+                        <Text numberOfLines={1} style={{ fontSize: 16, color: '#2FBC44', }}>{item.currency + ' ' + item.amount}</Text>
+                      </View>
+                    </View>
+
+
+                  </View>
 
                 </View>
-                <View style={styles.divider} />
-              </View>
+              </Card>
             );
           }}
           keyExtractor={(item, index) => index.toString()}
@@ -196,14 +232,15 @@ export default function UserPayouts(props: any) {
           leftButton={() => props.navigation.goBack()}
         />
         <View style={[styles.innerContainer, {
-          flex: 1
+          flex: 1,
         }]}>
           {payouts ? (
             <View style={{
-              flex: 0.97
+              flex: 0.97,
             }}>
               <Card style={{
-                backgroundColor: "#FAFAFA"
+                backgroundColor: "#FAFAFA",
+
               }}>
                 <View style={{
                   flexDirection: 'row',
@@ -271,7 +308,7 @@ export default function UserPayouts(props: any) {
                         <View
                           style={{ flexDirection: 'row', justifyContent: "center", alignItems: "center" }}
                         >
-                          <Text style={{ color: "#7DCAAE" }}>{payouts?.region}</Text>
+                          <Text style={{ color: "#2FBC44" }}>{payouts?.region}</Text>
 
                         </View>
 
@@ -281,9 +318,7 @@ export default function UserPayouts(props: any) {
                     {/* <View style={styles.divider} /> */}
                   </View>
                   <View style={{
-                    // height: '100%',
                     justifyContent: 'center',
-                    // backgroundColor: "#990099"
                   }}>
                     <Icon
                       name={"delete"}
@@ -316,17 +351,39 @@ export default function UserPayouts(props: any) {
           )}
 
         </View>
-      </View>
-      {/* <View style={styles.buttonContainer}>
-        <Button
-          style={styles.button}
-          onPress={() => {
-            
+
+        <RBSheet
+          ref={RBSortingSheetRef}
+          openDuration={250}
+          customStyles={{
+            container: {
+              borderTopLeftRadius: hp(5),
+              borderTopRightRadius: hp(5),
+              padding: hp(3),
+              backgroundColor: "#fff",
+              alignItems: "center",
+            },
           }}
         >
-          <Text style={styles.buttonText}>Delete payout method</Text>
-        </Button>
-      </View> */}
+          <Text style={{ fontSize: hp(2.75), color: "#ccc" }}>
+            {t("Sorting by Date")}
+          </Text>
+
+          {renderPluginActivationSwitch()}
+
+          <MyButton
+            style={styles.button}
+            onPress={() => {
+              setSortValue(sortValueForModal);
+              RBSortingSheetRef.current.close();
+            }}
+          >
+            <Text style={[styles.buttonText]}>
+              {t("Apply")}
+            </Text>
+          </MyButton>
+        </RBSheet>
+      </View>
     </>
   );
 }
@@ -338,7 +395,7 @@ const styles = StyleSheet.create({
   },
   innerContainer: {
     marginHorizontal: hp(2.5),
-    marginTop: hp(2),
+    marginTop: 20,
   },
   credsFont: {
     fontWeight: "700",
@@ -347,7 +404,7 @@ const styles = StyleSheet.create({
     marginTop: hp(1),
   },
   button: {
-    backgroundColor: "#d40101",
+    backgroundColor: "#ffc000",
     borderRadius: hp(5),
     height: hp(7),
     width: "100%",
@@ -376,7 +433,7 @@ const styles = StyleSheet.create({
     height: wp(0.2),
     width: "100%",
     backgroundColor: "#DEDEDE",
-    marginVertical: hp(1),
+    marginTop: 15
   },
   bankIcon: {
     height: wp(10),
