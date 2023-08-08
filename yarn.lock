@@ -1113,6 +1113,14 @@
     deepmerge "^3.2.0"
     hoist-non-react-statics "^3.3.0"
 
+"@callstack/react-theme-provider@^3.0.9":
+  version "3.0.9"
+  resolved "https://registry.yarnpkg.com/@callstack/react-theme-provider/-/react-theme-provider-3.0.9.tgz#01035fa1231f1fffc1a806be1b55eb82716e80c1"
+  integrity sha512-tTQ0uDSCL0ypeMa8T/E9wAZRGKWj8kXP7+6RYgPTfOPs9N07C9xM8P02GJ3feETap4Ux5S69D9nteq9mEj86NA==
+  dependencies:
+    deepmerge "^3.2.0"
+    hoist-non-react-statics "^3.3.0"
+
 "@colors/colors@1.5.0":
   version "1.5.0"
   resolved "https://registry.npmjs.org/@colors/colors/-/colors-1.5.0.tgz"
@@ -4347,7 +4355,7 @@ color-string@^1.5.3, color-string@^1.6.0, color-string@^1.9.0:
     color-name "^1.0.0"
     simple-swizzle "^0.2.2"
 
-color@^3.2.1:
+color@^3.1.2, color@^3.2.1:
   version "3.2.1"
   resolved "https://registry.npmjs.org/color/-/color-3.2.1.tgz"
   integrity sha512-aBl7dZI9ENN6fUGC7mWpMTPNHmWUSNan9tuWN6ahh5ZLNk9baLJOnSMlrQkHcrfFgz2/RigjUVAjdx36VcemKA==
@@ -10690,6 +10698,15 @@ react-native-nfc-manager@^3.14.3:
   dependencies:
     "@expo/config-plugins" "^6.0.1"
 
+react-native-paper@^5.10.0:
+  version "5.10.0"
+  resolved "https://registry.yarnpkg.com/react-native-paper/-/react-native-paper-5.10.0.tgz#6e4dea8001f4f54b22bf0ceaeec56ec6c8ebb783"
+  integrity sha512-RiPHyIOmO0oJlRxVIPC+9PhRFIqHSP9lTTZy+kzWNdwWW62MF6DySAwvTe9FBE6z6x/4lef87bfeu/JThVCqqA==
+  dependencies:
+    "@callstack/react-theme-provider" "^3.0.9"
+    color "^3.1.2"
+    use-latest-callback "^0.1.5"
+
 react-native-persona@^2.5.0:
   version "2.5.0"
   resolved "https://registry.npmjs.org/react-native-persona/-/react-native-persona-2.5.0.tgz"
@@ -10703,6 +10720,13 @@ react-native-persona@^2.5.0:
     object-path "^0.11.8"
     pkg-up "^3.1.0"
     xmlbuilder2 "^3.0.0"
+
+react-native-progress@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-progress/-/react-native-progress-5.0.0.tgz#f5ac6ceaeee27f184c660b00f29419e82a9d0ab0"
+  integrity sha512-KjnGIt3r9i5Kn2biOD9fXLJocf0bwxPRxOyAgXEnZTJQU2O+HyzgGFRCbM5h3izm9kKIkSc1txh8aGmMafCD9A==
+  dependencies:
+    prop-types "^15.7.2"
 
 react-native-qrcode-svg@^6.2.0:
   version "6.2.0"

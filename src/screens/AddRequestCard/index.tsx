@@ -1,21 +1,20 @@
-import React, { useState, useEffect } from "react";
+import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import { useIsFocused } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
+  ActivityIndicator,
   FlatList,
   StyleSheet,
   Text,
   View,
-  TouchableOpacity,
 } from "react-native";
+import { AnimatedFAB } from "react-native-paper";
 import Header from "../../../components/Header";
-import { useTranslation } from "react-i18next";
+import TabButtons from "../../../components/TabButtons";
+import { tintColorDark } from "../../../constants/Colors";
 import { useGetRefillRequestsQuery } from "../../../redux/cards/cardsApiSlice";
-import { useIsFocused } from "@react-navigation/native";
-import { formatDateTime, hp } from "../../../utils";
-import Button from "../../../components/Button";
-import Colors, { tintColorDark } from "../../../constants/Colors";
-import Icon from "@expo/vector-icons/MaterialCommunityIcons";
-import Toast from "react-native-root-toast";
-import { ActivityIndicator } from "react-native";
+import { formatDateTime, hp, wp } from "../../../utils";
 
 export default function AddRequestCard(props) {
   const { t, i18n } = useTranslation();
@@ -27,10 +26,20 @@ export default function AddRequestCard(props) {
     refetch: refillRequestsRefetch,
   } = useGetRefillRequestsQuery();
 
+  const [isExtended, setIsExtended] = useState(true);
   const isFocused = useIsFocused();
   const [cardData, setCardData] = useState([]);
   const [cardRequests, setCardRequests] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [approvedRequestCount, setApprovedRequestCount] = useState(0);
+  const [pendingRequestCount, setPendingRequestCount] = useState(0);
+
+  const onScroll = ({ nativeEvent }) => {
+    const currentScrollPosition =
+      Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
+
+    setIsExtended(currentScrollPosition <= 0);
+  };
 
   useEffect(() => {
     refillRequestsRefetch();
@@ -43,6 +52,17 @@ export default function AddRequestCard(props) {
     if (refillRequestsError) {
       console.log("resError", refillRequestsError);
     }
+
+    const approvedData = refillRequestsData?.results.filter(
+      (obj) => obj.status === "approved",
+    );
+
+    setApprovedRequestCount(approvedData?.length);
+    setPendingRequestCount(
+      parseInt(refillRequestsData?.results.length) -
+        parseInt(approvedData?.length),
+    );
+
     const sortedResults = refillRequestsData?.results
       .slice()
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -50,81 +70,185 @@ export default function AddRequestCard(props) {
     setCardRequests(sortedResults);
   }, [isFocused, refillRequestsData]);
 
+  //Remarks - CallBacks
+  const filterData = (value) => {
+
+    const localData = [...refillRequestsData?.results];
+
+    if (value === "") {
+      const sortedResults = localData
+        .slice()
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+      setCardRequests(sortedResults);
+    } else if (value === "Pending") {
+      const filteredData = localData.filter((obj) => obj.status === "pending");
+      const sortedResults = filteredData
+        .slice()
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+      setCardRequests(sortedResults);
+    } else if (value === "Approved") {
+      const filteredData = localData.filter((obj) => obj.status === "approved");
+
+      const sortedResults = filteredData
+        .slice()
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+      setCardRequests(sortedResults);
+    }
+  };
+
   const renderedItem = (item, index) => {
     return (
-      <View style={styles.cardContainer}>
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Text style={{ color: "#ccc", fontSize: 12 }}>
-            #{index + 1} {formatDateTime(item?.createdAt)}
-          </Text>
+      <View
+        style={{
+          paddingTop: 10,
+          backgroundColor: "white",
+        }}
+      >
+        <View
+          style={{
+            paddingHorizontal: 20,
+          }}
+        >
           <View
-            style={{
-              borderRadius: 20,
-              padding: 2,
-              height: 22,
-              alignItems: "center",
-              justifyContent: "center",
-              paddingHorizontal: 8,
-              backgroundColor:
-                item?.status === "approved" ? `#2fbc362b` : `#d300152b`,
-              borderWidth: 1,
-              borderColor: item?.status === "approved" ? `#21c729` : `#ff0019`,
-            }}
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            <Text
+            <Text style={{ color: "#ccc", fontSize: 12 }}>
+              #{index + 1} {formatDateTime(item?.createdAt)}
+            </Text>
+            <View
               style={{
-                color: item?.status === "approved" ? "#21c729" : "#ff0019",
-                textTransform: "capitalize",
-                fontSize: 12,
+                borderRadius: 20,
+                padding: 2,
+                height: 22,
+                alignItems: "center",
+                justifyContent: "center",
+                paddingHorizontal: 8,
+                backgroundColor:
+                  item?.status === "approved" ? `#2fbc362b` : `#FE6E002B`,
+                borderWidth: 1,
+                borderColor:
+                  item?.status === "approved" ? `#21c729` : `#FE6E00`,
               }}
             >
-              {item.status}
-            </Text>
+              <Text
+                style={{
+                  color: item?.status === "approved" ? "#21c729" : "#FE6E00",
+                  textTransform: "capitalize",
+                  fontSize: 12,
+                }}
+              >
+                {item.status}
+              </Text>
+            </View>
+          </View>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Icon name={"numeric"} color={tintColorDark} size={22} />
+            <Text style={styles.text}>{item.cards_amount} cards</Text>
+          </View>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Icon name={"map-marker"} color={tintColorDark} size={22} />
+            <Text style={styles.text1}>{item.address1}</Text>
           </View>
         </View>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Icon name={"numeric"} color={tintColorDark} size={22} />
-          <Text style={styles.text}>{item.cards_amount} cards</Text>
-        </View>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Icon name={"map-marker"} color={tintColorDark} size={22} />
-          <Text style={styles.text1}>{item.address1}</Text>
-        </View>
+        <View style={styles.divider} />
       </View>
     );
   };
 
+  //Remarks - Floating Animated Button
+  const renderCreateNewRequest = () => {
+    return (
+      <AnimatedFAB
+        color="white"
+        icon={"plus"}
+        label={t("Create New Request")}
+        extended={isExtended}
+        onPress={() => {
+          props.navigation.navigate("RequestCards");
+        }}
+        visible={true}
+        animateFrom={"right"}
+        iconMode={"dynamic"}
+        style={{
+          bottom: 40,
+          right: 20,
+          position: "absolute",
+          backgroundColor: tintColorDark,
+        }}
+      />
+    );
+  };
+
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: "white",
+        },
+      ]}
+    >
       <Header
         title={t("Request Cards")}
         leftButton={() => props.navigation.goBack()}
       />
 
-      <Button
-        onPress={() => props.navigation.navigate("RequestCards")}
-        style={styles.buttonBelow}
+      <View
+        style={{
+          flex: 1,
+          marginHorizontal: 20,
+        }}
       >
-        <Text style={{ color: "white" }}>{t("Create New Request")}</Text>
-      </Button>
-
-      <View style={styles.listContainer}>
-        <FlatList
-          data={cardRequests}
-          extraData={cardRequests}
-          showsVerticalScrollIndicator={false}
+        <View
           style={{
-            flex: 1,
+            marginTop: 20,
           }}
-          renderItem={({ item, index }) => renderedItem(item, index)}
-          ListEmptyComponent={() => (
-            <View style={{ marginTop: 200, alignItems: "center" }}>
-              <Text>{t("No Cards yet")}</Text>
-              <View style={{ marginTop: 50 }}></View>
-              <ActivityIndicator size={"large"} color={tintColorDark} />
-            </View>
-          )}
-        />
+        >
+          <TabButtons
+            pendingFunds="Pending"
+            pendingFundAmount={pendingRequestCount}
+            settledFunds="Approved"
+            settledFundAmount={approvedRequestCount}
+            btnActionPendingSettledOrder={filterData}
+          />
+        </View>
+        <View
+          style={{
+            marginTop: 20,
+            marginBottom: 10,
+          }}
+        >
+          <Text style={[{ fontSize: 18, fontWeight: "600", color: "#4F4F4F" }]}>
+            Total Requests: {refillRequestsData?.results.length}
+          </Text>
+        </View>
+
+        <View style={styles.listContainer}>
+          <FlatList
+            data={cardRequests}
+            extraData={cardRequests}
+            onScroll={onScroll}
+            contentContainerStyle={{
+              paddingBottom: 20,
+            }}
+            showsVerticalScrollIndicator={false}
+            style={{
+              flex: 1,
+            }}
+            renderItem={({ item, index }) => renderedItem(item, index)}
+            ListEmptyComponent={() => (
+              <View style={{ marginTop: 200, alignItems: "center" }}>
+                <Text>{t("No Cards yet")}</Text>
+                <View style={{ marginTop: 50 }}></View>
+                <ActivityIndicator size={"large"} color={tintColorDark} />
+              </View>
+            )}
+          />
+        </View>
+        {renderCreateNewRequest()}
       </View>
     </View>
   );
@@ -152,15 +276,6 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     flex: 1,
-    margin: 10,
-  },
-  cardContainer: {
-    backgroundColor: "white",
-    borderRadius: 20,
-    marginHorizontal: hp(1),
-    marginVertical: hp(0.5),
-    padding: 15,
-    elevation: 2,
   },
   text: {
     fontSize: hp(2.2),
@@ -170,5 +285,12 @@ const styles = StyleSheet.create({
   text1: {
     fontSize: hp(1.7),
     marginLeft: 8,
+  },
+  divider: {
+    height: wp(0.2),
+    width: "100%",
+    backgroundColor: "#DEDEDE",
+    marginTop: 10,
+    // marginVertical: hp(1),
   },
 });
