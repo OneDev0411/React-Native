@@ -19,6 +19,26 @@ const pricing: any = {
 			price: 175,
 		},
 	},
+	2: {
+		USD: {
+			price: 160,
+		},
+		EUR: {
+			price: 160,
+		},
+		AED: {
+			price: 650,
+		},
+		MAD: {
+			price: 1600,
+		},
+		CAD: {
+			price: 230,
+		},
+		NZD: {
+			price: 260,
+		},
+	},
 	3: {
 		USD: {
 			price: 200,
