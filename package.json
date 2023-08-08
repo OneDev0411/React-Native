@@ -14,7 +14,7 @@
     "test": "jest --watchAll",
     "clean": "cd android && ./gradlew clean",
     "linter": "eslint \"src/screens/**/*.tsx\"",
-    "prettier": "prettier --write \"src/screens/**/*.tsx\""
+    "prettier": "prettier --write \"**/*.{tsx,ts}\""
   },
   "jest": {
     "preset": "jest-expo"

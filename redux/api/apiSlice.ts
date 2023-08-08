@@ -35,7 +35,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
             },
           },
           api,
-          extraOptions
+          extraOptions,
         );
 
         if (refreshResult.data) {
