@@ -2,8 +2,15 @@ import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { useIsFocused } from "@react-navigation/native";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Alert, FlatList, Image, RefreshControl, StyleSheet, View } from "react-native";
-import { Card, Switch } from 'react-native-paper';
+import {
+  Alert,
+  FlatList,
+  Image,
+  RefreshControl,
+  StyleSheet,
+  View,
+} from "react-native";
+import { Card, Switch } from "react-native-paper";
 import RBSheet from "react-native-raw-bottom-sheet";
 import Toast from "react-native-root-toast";
 import MyButton from "../../../components/Button";
@@ -15,7 +22,6 @@ import {
   useGetPayoutsQuery,
 } from "../../../redux/user/userApiSlice";
 import { formatDateTime, hp, wp } from "../../../utils";
-
 
 export default function UserPayouts(props: any) {
   const { t } = useTranslation();
@@ -40,20 +46,29 @@ export default function UserPayouts(props: any) {
     isError: pauoutsIsError,
     isLoading: payoutsIsLoading,
     refetch: refetchPayouts,
-  } = useGetPayoutsQuery({ page: page, limit: 20, sortBy: (sortValue) ? ('createdAt:asc') : ('createdAt:desc') });
+  } = useGetPayoutsQuery({
+    page: page,
+    limit: 20,
+    sortBy: sortValue ? "createdAt:asc" : "createdAt:desc",
+  });
 
   useEffect(() => {
-
     if (page === 1) {
-      setPayoutsListData((!!payoutsData && !!payoutsData.results && payoutsData.results.length > 0) ? (payoutsData.results) : ([]));
-    } else if (!!payoutsData && !!payoutsData.results && payoutsData.results.length > 0) {
-
+      setPayoutsListData(
+        !!payoutsData && !!payoutsData.results && payoutsData.results.length > 0
+          ? payoutsData.results
+          : [],
+      );
+    } else if (
+      !!payoutsData &&
+      !!payoutsData.results &&
+      payoutsData.results.length > 0
+    ) {
       setPayoutsListData(payoutsListData.concat(payoutsData.results));
     }
-  }, [payoutsData])
+  }, [payoutsData]);
 
   useEffect(() => {
-
     //REMARK: Refresh List on Flatlist onRefresh
     if (page === 1) {
       refetchPayouts();
@@ -61,7 +76,6 @@ export default function UserPayouts(props: any) {
   }, [page]);
 
   useEffect(() => {
-
     //REMARK: Refresh List on sort modal value change
     refetchPayouts();
   }, [sortValue]);
@@ -87,13 +101,18 @@ export default function UserPayouts(props: any) {
   //REMARK: Recent Transaction And Sorting View
   const renderRecentTransactionAndSortingView = () => {
     return (
-      <View style={{ justifyContent: 'space-between', marginTop: 20, marginBottom: 5, flexDirection: 'row' }}>
-
-        <View style={{ justifyContent: "center" }} >
-          <Text style={{ fontSize: 22 }}>{'Recent Transactions'}</Text>
+      <View
+        style={{
+          justifyContent: "space-between",
+          marginTop: 20,
+          marginBottom: 5,
+          flexDirection: "row",
+        }}
+      >
+        <View style={{ justifyContent: "center" }}>
+          <Text style={{ fontSize: 22 }}>{"Recent Transactions"}</Text>
         </View>
 
-        
         {/* <Icon
           name={"sort"}
           color={"black"}
@@ -105,24 +124,33 @@ export default function UserPayouts(props: any) {
         /> */}
       </View>
     );
-  }
+  };
 
   const renderPluginActivationSwitch = () => {
     return (
-      <View style={{ flex: 1, marginTop: 20, flexDirection: 'row', alignItems: 'center' }}>
-        <View style={{
-          flex: 0.5,
-        }}>
-          <Text style={[{ fontSize: 18, color: '#000' }]}
-            numberOfLines={1}>
-            {'Ascending'}
+      <View
+        style={{
+          flex: 1,
+          marginTop: 20,
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        <View
+          style={{
+            flex: 0.5,
+          }}
+        >
+          <Text style={[{ fontSize: 18, color: "#000" }]} numberOfLines={1}>
+            {"Ascending"}
           </Text>
-
         </View>
-        <View style={{
-          flex: 0.5,
-          alignItems: 'flex-end',
-        }}>
+        <View
+          style={{
+            flex: 0.5,
+            alignItems: "flex-end",
+          }}
+        >
           <Switch
             value={sortValueForModal}
             onValueChange={(v) => {
@@ -132,88 +160,133 @@ export default function UserPayouts(props: any) {
           />
         </View>
       </View>
-    )
-  }
+    );
+  };
 
   const handleLoadMore = () => {
-    if (!payoutsIsLoading && !pauoutsIsError && (!!payoutsListData && !!payoutsListData) ? payoutsListData.length > 0 : false) {
+    if (
+      !payoutsIsLoading &&
+      !pauoutsIsError &&
+      !!payoutsListData &&
+      !!payoutsListData
+        ? payoutsListData.length > 0
+        : false
+    ) {
       setPage(page + 1);
     }
   };
   //REMARK: Recent Transaction Flat List View
   const renderRecentTransactionListView = () => {
     return (
-      <View style={{
-        flex: 1,
-        
-      }}>
+      <View
+        style={{
+          flex: 1,
+        }}
+      >
         <FlatList
           data={payoutsListData}
-          style={{
-
-          }}
+          style={{}}
           contentContainerStyle={{ paddingBottom: 10 }}
           renderItem={({ item, index }) => {
             return (
-                <View style={{
+              <View
+                style={{
                   paddingTop: 10,
-                }}>
-                  <View style={{ flexDirection: 'row', }}>
-                    <View style={{
+                }}
+              >
+                <View style={{ flexDirection: "row" }}>
+                  <View
+                    style={{
                       flex: 0.2,
-                    }}>
-
-                      <Icon
-                        name={item?.method == "cash" ? ("cash") : (item?.method == "bank" ? ("bank") : (item?.method == "crypto" ? ("bitcoin") : ("paypal")))}
-                        color={"#ffc000"}
-                        size={60}
-                      />
-                    </View>
-
-                    <View style={{ flex: 0.4, padding: 5, alignItems: 'flex-start', }}>
-                      <Text style={{ fontSize: 20 }}>{'Payout'}</Text>
-                      <Text style={{ fontSize: 14, marginTop: 1, color: '#8D9683' }}>{formatDateTime(item?.createdAt)}</Text>
-                    </View>
-
-                    <View style={{ flex: 0.4, alignItems: 'flex-end', justifyContent: 'center', }}>
-                      <View style={{
-                        borderRadius: 50,
-                        paddingHorizontal: 10,
-                        paddingVertical: 3
-                      }}>
-                        <Text numberOfLines={1} style={{ fontWeight: '600', fontSize: 16, color: 'green', }}>{item.currency + ' ' + item.amount}</Text>
-                      </View>
-                    </View>
-
+                    }}
+                  >
+                    <Icon
+                      name={
+                        item?.method == "cash"
+                          ? "cash"
+                          : item?.method == "bank"
+                          ? "bank"
+                          : item?.method == "crypto"
+                          ? "bitcoin"
+                          : "paypal"
+                      }
+                      color={"#ffc000"}
+                      size={60}
+                    />
                   </View>
 
-                  <View style={styles.divider} />
+                  <View
+                    style={{ flex: 0.4, padding: 5, alignItems: "flex-start" }}
+                  >
+                    <Text style={{ fontSize: 20 }}>{"Payout"}</Text>
+                    <Text
+                      style={{ fontSize: 14, marginTop: 1, color: "#8D9683" }}
+                    >
+                      {formatDateTime(item?.createdAt)}
+                    </Text>
+                  </View>
+
+                  <View
+                    style={{
+                      flex: 0.4,
+                      alignItems: "flex-end",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <View
+                      style={{
+                        borderRadius: 50,
+                        paddingHorizontal: 10,
+                        paddingVertical: 3,
+                      }}
+                    >
+                      <Text
+                        numberOfLines={1}
+                        style={{
+                          fontWeight: "600",
+                          fontSize: 16,
+                          color: "green",
+                        }}
+                      >
+                        {item.currency + " " + item.amount}
+                      </Text>
+                    </View>
+                  </View>
                 </View>
+
+                <View style={styles.divider} />
+              </View>
             );
           }}
           keyExtractor={(item, index) => index.toString()}
           refreshControl={
             <RefreshControl
-              tintColor={'#000000'}
-              title={'Refreshing...'}
-              titleColor={'#000000'}
+              tintColor={"#000000"}
+              title={"Refreshing..."}
+              titleColor={"#000000"}
               refreshing={false}
               onRefresh={() => {
                 setPage(1);
               }}
             />
           }
-          ListFooterComponent={payoutsIsLoading && <Text style={{
-            color: 'black'
-          }}>Loading more...</Text>}
-
+          ListFooterComponent={
+            payoutsIsLoading && (
+              <Text
+                style={{
+                  color: "black",
+                }}
+              >
+                Loading more...
+              </Text>
+            )
+          }
           onEndReached={handleLoadMore}
           onEndReachedThreshold={0.1}
         />
       </View>
-
     );
-  }
+  };
 
   return (
     <>
@@ -222,37 +295,48 @@ export default function UserPayouts(props: any) {
           title={t("Payout Methods")}
           leftButton={() => props.navigation.goBack()}
         />
-        <View style={[styles.innerContainer, {
-          flex: 1,
-        }]}>
+        <View
+          style={[
+            styles.innerContainer,
+            {
+              flex: 1,
+            },
+          ]}
+        >
           {payouts ? (
-            <View style={{
-              flex: 0.97,
-            }}>
-              <Card style={{
-                backgroundColor: "#FAFAFA",
-
-              }}>
-                <View style={{
-                  flexDirection: 'row',
-                  padding: 20,
-                }}>
+            <View
+              style={{
+                flex: 0.97,
+              }}
+            >
+              <Card
+                style={{
+                  backgroundColor: "#FAFAFA",
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    padding: 20,
+                  }}
+                >
                   <View
                     style={{
                       flex: 1,
-                      paddingRight: 5
-
+                      paddingRight: 5,
                     }}
                   >
                     <View style={{ flexDirection: "row" }}>
-                      <View style={{
-                        height: wp(16),
-                        width: wp(16),
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        backgroundColor: "#BDBDBD",
-                        borderRadius: wp(16),
-                      }}>
+                      <View
+                        style={{
+                          height: wp(16),
+                          width: wp(16),
+                          justifyContent: "center",
+                          alignItems: "center",
+                          backgroundColor: "#BDBDBD",
+                          borderRadius: wp(16),
+                        }}
+                      >
                         <Image
                           style={styles.bankIcon}
                           resizeMode="contain"
@@ -260,17 +344,27 @@ export default function UserPayouts(props: any) {
                             payouts?.method == "cash"
                               ? require("../../../assets/images/money.png")
                               : payouts?.method == "bank"
-                                ? require("../../../assets/images/bank.png")
-                                : payouts?.method == "crypto"
-                                  ? require("../../../assets/images/crypto.jpg")
-                                  : require("../../../assets/images/paypal.png")
+                              ? require("../../../assets/images/bank.png")
+                              : payouts?.method == "crypto"
+                              ? require("../../../assets/images/crypto.jpg")
+                              : require("../../../assets/images/paypal.png")
                           }
                         />
                       </View>
-                      <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingLeft: 10 }}>
-                        <View style={{
-                          flex: 1
-                        }}>
+                      <View
+                        style={{
+                          flex: 1,
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          paddingLeft: 10,
+                        }}
+                      >
+                        <View
+                          style={{
+                            flex: 1,
+                          }}
+                        >
                           <Text
                             style={{
                               fontWeight: "500",
@@ -281,24 +375,34 @@ export default function UserPayouts(props: any) {
                               ? "Anonymous"
                               : payouts?.accountHolder}
                           </Text>
-                          
+
                           {payouts?.method == "crypto" ? (
-                            <Text style={styles.bankName}>{payouts?.routing}</Text>
+                            <Text style={styles.bankName}>
+                              {payouts?.routing}
+                            </Text>
                           ) : null}
-                          <Text style={[styles.bankName, {
-                            fontSize: (payouts?.method == "crypto") ? (12) : (16)
-                          }]}>
+                          <Text
+                            style={[
+                              styles.bankName,
+                              {
+                                fontSize: payouts?.method == "crypto" ? 12 : 16,
+                              },
+                            ]}
+                          >
                             {payouts?.bankName} - {payouts?.account}
                           </Text>
-                          <Text style={{ fontWeight: '600', color: "green" }}>{payouts?.region}</Text>
-                          
+                          <Text style={{ fontWeight: "600", color: "green" }}>
+                            {payouts?.region}
+                          </Text>
                         </View>
                       </View>
                     </View>
                   </View>
-                  <View style={{
-                    justifyContent: 'center',
-                  }}>
+                  <View
+                    style={{
+                      justifyContent: "center",
+                    }}
+                  >
                     <Icon
                       name={"delete"}
                       color={"#ff6669"}
@@ -323,12 +427,10 @@ export default function UserPayouts(props: any) {
 
               {renderRecentTransactionAndSortingView()}
               {renderRecentTransactionListView()}
-
             </View>
           ) : (
             props?.navigation?.navigate("Settings")
           )}
-
         </View>
 
         {/* <RBSheet
@@ -405,13 +507,13 @@ const styles = StyleSheet.create({
   bankName: {
     fontSize: 12,
     marginTop: 2,
-    color: '#757575'
+    color: "#757575",
   },
   divider: {
     height: wp(0.2),
     width: "100%",
     backgroundColor: "#DEDEDE",
-    marginTop: 10
+    marginTop: 10,
   },
   bankIcon: {
     height: wp(10),
