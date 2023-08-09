@@ -24,7 +24,7 @@ const authSlice = createSlice({
       state.isTokenValid = action?.payload;
     },
     setReferralCode: (state, action) => {
-      console.log('setting referral code to', action?.payload)
+      console.log("setting referral code to", action?.payload);
       state.referralCode = action?.payload;
     },
     logOut: (state) => {

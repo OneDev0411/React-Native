@@ -14,7 +14,7 @@
     "test": "jest --watchAll",
     "clean": "cd android && ./gradlew clean",
     "linter": "eslint \"src/screens/**/*.tsx\"",
-    "prettier": "prettier --write \"src/screens/**/*.tsx\""
+    "prettier": "prettier --write \"**/*.{tsx,ts}\""
   },
   "jest": {
     "preset": "jest-expo"
@@ -55,11 +55,13 @@
     "react-native-country-picker-modal": "^2.0.0",
     "react-native-dotenv": "^3.4.8",
     "react-native-dropdown-picker": "^5.4.6",
+    "react-native-elements": "^3.4.3",
     "react-native-gesture-handler": "~2.9.0",
     "react-native-google-places-autocomplete": "^2.5.1",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-modal": "^13.0.1",
     "react-native-nfc-manager": "^3.14.3",
+    "react-native-paper": "^5.10.0",
     "react-native-persona": "^2.5.0",
     "react-native-qrcode-svg": "^6.2.0",
     "react-native-ratings": "^8.1.0",
