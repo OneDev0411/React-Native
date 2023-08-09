@@ -9,7 +9,7 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Image
+  Image,
 } from "react-native";
 import { CountryPicker } from "react-native-country-codes-picker";
 import CountrySelector from "react-native-country-picker-modal";
@@ -58,12 +58,13 @@ export default function RequestCards(props) {
 
   useEffect(() => {
     if (refillEligibilitySuccess) {
-
       setCardsSold(refillEligibilityData?.cards_sold);
-      setCardsPending( refillEligibilityData?.cards_fulfilled - refillEligibilityData?.cards_sold);
+      setCardsPending(
+        refillEligibilityData?.cards_fulfilled -
+          refillEligibilityData?.cards_sold,
+      );
 
-      const total_cards =
-        refillEligibilityData?.cards_fulfilled
+      const total_cards = refillEligibilityData?.cards_fulfilled;
       const percentage = (
         (refillEligibilityData?.cards_sold / total_cards) *
         100
@@ -90,26 +91,24 @@ export default function RequestCards(props) {
   });
 
   const createCardReuest = async (values: object) => {
-
     try {
       if (values?.cards_amount <= 50) {
-
         var body = {
           address1: values.address1,
           cards_amount: values.cards_amount,
           city: values.city,
           country: values.country,
-        }
+        };
 
         if (!!values?.phone) {
-          body.phone = countryCode + values?.phone
+          body.phone = countryCode + values?.phone;
         }
 
         if (!!values?.address2) {
-          body.address2 = values?.address2
+          body.address2 = values?.address2;
         }
         if (!!values?.zip) {
-          body.zip = values?.zip
+          body.zip = values?.zip;
         }
 
         const resp = await requestRefillCards(body);
@@ -135,7 +134,6 @@ export default function RequestCards(props) {
         //   });
         // }
       }
-
     } catch (e) {
       console.log("creatCardError--->", e);
     }
@@ -314,7 +312,7 @@ export default function RequestCards(props) {
                     autoCapitalize={"none"}
                     placeholder={t("Phone number")}
                     keyboardType="number-pad"
-                  // onPressIn={() => setShow(true)}
+                    // onPressIn={() => setShow(true)}
                   />
                 </TouchableOpacity>
                 {errors.phone && touched.phone && (
@@ -424,38 +422,50 @@ export default function RequestCards(props) {
         leftButton={() => props.navigation.goBack()}
       />
       <View style={{ padding: 15 }}>
-      
-      <Image
-      style={{
-        width: '100%',
-        height: "70%",
-        // backgroundColor: '#909011'
-      }}
-      resizeMode="contain"
-                    source={require("../../../assets/images/salesGraph.jpg")}
-                  />
-      
-      <View style={{marginTop:0,marginHorizontal:40 ,alignItems:'center'}}>
+        <Image
+          style={{
+            width: "100%",
+            height: "70%",
+            // backgroundColor: '#909011'
+          }}
+          resizeMode="contain"
+          source={require("../../../assets/images/salesGraph.jpg")}
+        />
 
-      <Text style={{ fontSize: 30,textAlign:'center', fontWeight: "800", marginTop: 10 }}>
-          {t("Keep Selling")}
-        </Text>
+        <View
+          style={{ marginTop: 0, marginHorizontal: 40, alignItems: "center" }}
+        >
+          <Text
+            style={{
+              fontSize: 30,
+              textAlign: "center",
+              fontWeight: "800",
+              marginTop: 10,
+            }}
+          >
+            {t("Keep Selling")}
+          </Text>
 
-<Text style={{ fontSize: 14,textAlign:'center', fontWeight: "500", marginTop: 20 }}>
-          {t("You need to sell")} {cards_pending}{" "}
-          {t(
-            "more cards in order to request new cards. Only paid sales are taken into account.",
-          )}
-        
-        </Text>
-</View>
+          <Text
+            style={{
+              fontSize: 14,
+              textAlign: "center",
+              fontWeight: "500",
+              marginTop: 20,
+            }}
+          >
+            {t("You need to sell")} {cards_pending}{" "}
+            {t(
+              "more cards in order to request new cards. Only paid sales are taken into account.",
+            )}
+          </Text>
+        </View>
         {/* <View style={{justifyContent:'center',alignItems:'center',flex:1,marginTop:20}}>
         <Text style={{ color: tintColorDark, fontSize: 40, fontWeight: "600" }}>
             {t(" Cards Stats")}
           </Text>
           </View> */}
-     
-        
+
         <View
           style={{
             alignItems: "center",
@@ -472,7 +482,14 @@ export default function RequestCards(props) {
             borderColor="#d1d1d1"
             // borderWidth={1}
           />
-          <Text style={{ color: "black", fontSize: 12, fontWeight: "600", marginTop: 10 }}>
+          <Text
+            style={{
+              color: "black",
+              fontSize: 12,
+              fontWeight: "600",
+              marginTop: 10,
+            }}
+          >
             {progress}% {t("sold")}
           </Text>
         </View>
@@ -609,7 +626,6 @@ export default function RequestCards(props) {
          </View>
          
         </Card> */}
-
       </View>
     </ScrollView>
   );
@@ -649,13 +665,13 @@ const styles = StyleSheet.create({
     color: "black",
   },
   statusContainer: {
-    flex:1,
+    flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 20,
-    marginBottom:20,
-    width:'80%',
-    alignSelf:'center',
+    marginBottom: 20,
+    width: "80%",
+    alignSelf: "center",
     // marginHorizontal: 10,
   },
   inputViewStyle: {

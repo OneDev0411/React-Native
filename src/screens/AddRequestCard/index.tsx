@@ -60,7 +60,7 @@ export default function AddRequestCard(props) {
     setApprovedRequestCount(approvedData?.length);
     setPendingRequestCount(
       parseInt(refillRequestsData?.results.length) -
-      parseInt(approvedData?.length),
+        parseInt(approvedData?.length),
     );
 
     const sortedResults = refillRequestsData?.results
