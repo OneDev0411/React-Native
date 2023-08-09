@@ -98,6 +98,7 @@ export default function SaleDetail(props: any) {
         <Header
           title={t("Sale Detail")}
           leftButton={() => props.navigation.goBack()}
+          rightButton={() => alert("TODO")}
         />
         {isLoading ? (
           <View style={styles.activityIndicator}>

@@ -10,6 +10,7 @@ import {
   View,
 } from "react-native";
 import { CountryPicker } from "react-native-country-codes-picker";
+import CountrySelector from "react-native-country-picker-modal";
 import * as Progress from "react-native-progress";
 import Toast from "react-native-root-toast";
 import * as yup from "yup";
@@ -22,6 +23,7 @@ import {
   useRequestRefillCardsMutation,
 } from "../../../redux/cards/cardsApiSlice";
 import { hp } from "../../../utils";
+import { getFlagEmoji } from "../../helpers/misc";
 
 export default function RequestCards(props) {
   const _formik = useRef();
@@ -30,9 +32,12 @@ export default function RequestCards(props) {
   const [cards_sold, setCardsSold] = useState(0);
   const [cards_pending, setCardsPending] = useState(0);
   const [progress, setProgress] = useState(0);
+  const [country, setCountry] = useState<any>({});
   const [countryCode, setCountryCode] = useState("");
+  const [countryName, setCountryName] = useState("");
   const [countryFlag, setCountryFlag] = useState("");
   const [isEligible, setEligible] = useState(false);
+
   const [requestRefillCards, { isLoading }] = useRequestRefillCardsMutation();
   const {
     data: refillEligibilityData,
@@ -70,24 +75,27 @@ export default function RequestCards(props) {
   const validationSchema = yup.object().shape({
     country: yup.string("Required").required("Country is required"),
     address1: yup.string("Required").required("Address1 is required"),
-    address2: yup.string("Required").required("Address2 is required"),
+    // address2: yup.string("Required").required("Address2 is required"),
     city: yup.string("Required").required("City is required"),
-    zip: yup
-      .string("Required")
-      .required("Zip code is required")
-      .length(5, "Zip code length must be 5"),
+    zip: yup.string("Required").length(5, "Zip code length must be 5"),
     phone: yup
       .string("Required")
-      .required("Phone number is required")
       .matches(phoneRegExp, "Phone number is not valid"),
 
     cards_amount: yup.string("Required").required("Card amount is required"),
   });
 
   const createCardReuest = async (values: object) => {
+    console.log("fahad values: ", values);
+    console.log("fahad country code: ", countryCode);
+
     try {
       if (values?.cards_amount <= 50) {
-        const resp = await requestRefillCards(values);
+        var newBody = { ...values };
+
+        newBody.phone = countryCode + values?.phone;
+
+        const resp = await requestRefillCards(newBody);
 
         if (resp?.data === null) {
           Toast.show("Your card is created successfully.", {
@@ -124,7 +132,7 @@ export default function RequestCards(props) {
             innerRef={_formik}
             key={countryCode} // add this prop for changes the country value
             initialValues={{
-              country: countryCode,
+              country: countryName,
               address1: "",
               address2: "",
               city: "",
@@ -145,45 +153,53 @@ export default function RequestCards(props) {
               touched,
             }) => (
               <View>
+                <Text style={styles.credsFont}>{t("Country")}</Text>
                 <Text
-                  style={[
-                    styles.credsFont,
-                    {
-                      marginTop: 0,
-                    },
-                  ]}
+                  style={{
+                    fontSize: 12,
+                    color: "#aaa",
+                    marginBottom: 6,
+                  }}
                 >
-                  Country
+                  {t(
+                    "Please select the country where you will make sales. This can be different from your country of nationality.",
+                  )}
                 </Text>
-                <TouchableOpacity
-                  style={[styles.inputViewStyle]}
-                  onPress={() => setShow(true)}
-                >
-                  <Input
-                    // onChangeText={handleChange("country")}
-                    pointerEvents={"none"}
-                    editable={false}
-                    onBlur={handleBlur("country")}
-                    value={values.country}
-                    style={{
-                      ...styles.inputField,
-                    }}
-                    icon
-                    iconColor={"#ccc"}
-                    iconName="city-variant"
-                    inputViewStyle={{
-                      ...styles.inputViewStyle,
+                <CountrySelector
+                  containerButtonStyle={{
+                    ...styles.inputField,
+                    height: hp(6),
+                    width: "100%",
+                    justifyContent: "center",
+                  }}
+                  withAlphaFilter
+                  withCountryNameButton
+                  withFilter
+                  countryCode={country?.cca2}
+                  onSelect={(c) => {
+                    setCountry(c);
 
-                      marginTop: 10,
-                    }}
-                    autoCapitalize={"none"}
-                    placeholder={t("Select your country")}
-                    // onPressIn={() => setShow(true)}
-                  />
-                </TouchableOpacity>
-                {errors.phone && touched.phone && (
-                  <Text style={styles.errorText}>{t(errors.phone)}</Text>
+                    console.log("Fahad country: ", c);
+                    console.log("Fahad country name: ", c.name);
+                    setCountryName(c.name);
+                    setCountryCode(c.callingCode[0]);
+
+                    handleChange("country")(c.name);
+
+                    if (c.callingCode[0]) {
+                      setCountryCode(`+${c.callingCode[0]}`);
+                    } else {
+                      setCountryCode("+1");
+                    }
+                    if (c.cca2) {
+                      setCountryFlag(getFlagEmoji(c.cca2));
+                    }
+                  }}
+                />
+                {errors.country && touched.country && (
+                  <Text style={styles.errorText}>{t(errors.country)}</Text>
                 )}
+
                 <Text style={styles.credsFont}>{t("Address 1")}</Text>
                 <Input
                   onChangeText={(text) => handleChange("address1")(text)}
@@ -235,22 +251,48 @@ export default function RequestCards(props) {
                   <Text style={styles.errorText}>{errors.city}</Text>
                 )}
 
-                <Text style={{ ...styles.credsFont, marginTop: 10 }}>
-                  {t("Phone Number")}
-                </Text>
-                <Input
-                  onChangeText={(text) => handleChange("phone")(text)}
-                  onBlur={handleBlur("phone")}
-                  value={values.phone}
-                  style={styles.inputField}
-                  icon
-                  iconName="phone"
-                  inputViewStyle={styles.inputViewStyle}
-                  iconColor={"#ccc"}
-                  autoCapitalize={"none"}
-                  keyboardType="number-pad"
-                  placeholder={t("Enter your phone number")}
-                />
+                <Text style={styles.credsFont}>{t("Phone number")}</Text>
+                <TouchableOpacity
+                  style={[
+                    styles.inputViewStyle,
+                    {
+                      justifyContent: "center",
+                      alignItems: "center",
+                      // backgroundColor: "#989811"
+                    },
+                  ]}
+                  onPress={() => setShow(true)}
+                >
+                  {countryCode ? (
+                    <Text style={{ width: "20%", marginLeft: 10 }}>
+                      {countryFlag + " " + countryCode}
+                    </Text>
+                  ) : (
+                    <Text style={{ width: "15%", marginLeft: 10 }}>🏳️ +0</Text>
+                  )}
+                  <Input
+                    onChangeText={(text: string) => handleChange("phone")(text)}
+                    value={values.phone}
+                    style={{
+                      ...styles.inputField,
+
+                      width: countryCode ? "95%" : "90%",
+                    }}
+                    icon
+                    iconColor={"#ccc"}
+                    iconName="phone"
+                    inputViewStyle={{
+                      ...styles.inputViewStyle,
+
+                      // marginTop: 10,
+                      width: countryCode ? "70%" : "80%",
+                    }}
+                    autoCapitalize={"none"}
+                    placeholder={t("Phone number")}
+                    keyboardType="number-pad"
+                    // onPressIn={() => setShow(true)}
+                  />
+                </TouchableOpacity>
                 {errors.phone && touched.phone && (
                   <Text style={styles.errorText}>{errors.phone}</Text>
                 )}
@@ -311,7 +353,8 @@ export default function RequestCards(props) {
           itemTemplate={(item) => (
             <TouchableOpacity
               onPress={() => {
-                setCountryCode(item.name);
+                setCountryCode(item?.item?.dial_code);
+                setCountryFlag(item?.item?.flag);
                 setShow(false);
               }}
               style={{ margin: 5, flex: 1, backgroundColor: "white" }}

@@ -72,7 +72,6 @@ export default function AddRequestCard(props) {
 
   //Remarks - CallBacks
   const filterData = (value) => {
-
     const localData = [...refillRequestsData?.results];
 
     if (value === "") {
