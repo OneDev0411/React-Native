@@ -37,9 +37,12 @@ import {
 import { ScrollView } from "react-native-gesture-handler";
 
 import { useTranslation } from "react-i18next";
+import { useIsFocused } from "@react-navigation/native";
 
 export default function MakeSale(props: any) {
   const { t, i18n } = useTranslation();
+
+  const isFocused = useIsFocused();
 
   // const salesFromStore = useSelector((state) => state.sale.currentSales);
 
@@ -114,6 +117,13 @@ export default function MakeSale(props: any) {
   useEffect(() => {
     setSales(saleData);
   }, [saleData]);
+
+  useEffect(() => {
+
+    if(isFocused) {
+      refetch();
+    }
+  }, [isFocused]);
 
   // const getSalesApi = async () => {
   //   setIsFetching(true);

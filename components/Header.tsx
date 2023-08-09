@@ -24,6 +24,16 @@ export default function CustomHeader(props: any) {
           />
         )
       }
+      rightComponent={
+        props.rightButton && (
+          <Icon
+            name={"delete"}
+            color={"white"}
+            size={20}
+            onPress={props.rightButton}
+          />
+        )
+      }
     />
   );
 }
