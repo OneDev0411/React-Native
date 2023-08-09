@@ -339,13 +339,13 @@ export default function Settings(props: any) {
 
           <TouchableOpacity
             onPress={() => {
-              Linking.openURL(`mailto:contact@popcard.io`);
+              Linking.openURL(`https://wa.me/message/TOWKBDQYAGPUC1`);
             }}
             style={styles.backgroundView}
           >
             <View style={styles.rowView}>
               <View style={styles.iconView}>
-                <MIcons name="phone-outline" size={20} />
+                <MIcons name="whatsapp" size={20} />
               </View>
               <Text style={styles.titleText}>{t("Contact Us")}</Text>
             </View>
