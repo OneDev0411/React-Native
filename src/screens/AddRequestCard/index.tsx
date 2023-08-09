@@ -60,7 +60,7 @@ export default function AddRequestCard(props) {
     setApprovedRequestCount(approvedData?.length);
     setPendingRequestCount(
       parseInt(refillRequestsData?.results.length) -
-        parseInt(approvedData?.length),
+      parseInt(approvedData?.length),
     );
 
     const sortedResults = refillRequestsData?.results
@@ -207,11 +207,11 @@ export default function AddRequestCard(props) {
           }}
         >
           <TabButtons
-            pendingFunds="Pending"
-            pendingFundAmount={pendingRequestCount}
-            settledFunds="Approved"
-            settledFundAmount={approvedRequestCount}
-            btnActionPendingSettledOrder={filterData}
+            pendingReq="Pending"
+            pendingReqNum={pendingRequestCount}
+            approvedReq="Approved"
+            approvedReqNum={approvedRequestCount}
+            btnActionPendingApprove={filterData}
           />
         </View>
         <View

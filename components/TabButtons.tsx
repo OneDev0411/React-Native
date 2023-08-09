@@ -3,34 +3,34 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { tintColorDark } from '../constants/Colors';
 
 const TabButtons = ({
-    pendingFunds,
-    pendingFundAmount,
-    settledFunds,
-    settledFundAmount,
-    btnActionPendingSettledOrder,
+    pendingReq,
+    pendingReqNum,
+    approvedReq,
+    approvedReqNum,
+    btnActionPendingApprove,
 }) => {
 
     const [currentSelection, setCurrentSelection] = useState('');
 
     const btnActionSettle = () => {
-        if (currentSelection === settledFunds) {
+        if (currentSelection === approvedReq) {
             setCurrentSelection('')
-            btnActionPendingSettledOrder('')
+            btnActionPendingApprove('')
         } else {
-            setCurrentSelection(settledFunds)
-            btnActionPendingSettledOrder(settledFunds)
+            setCurrentSelection(approvedReq)
+            btnActionPendingApprove(approvedReq)
         }
 
     }
 
     const btnActionPending = () => {
 
-        if (currentSelection === pendingFunds) {
+        if (currentSelection === pendingReq) {
             setCurrentSelection('')
-            btnActionPendingSettledOrder('')
+            btnActionPendingApprove('')
         } else {
-            setCurrentSelection(pendingFunds)
-            btnActionPendingSettledOrder(pendingFunds)
+            setCurrentSelection(pendingReq)
+            btnActionPendingApprove(pendingReq)
         }
     }
     return (
@@ -41,33 +41,34 @@ const TabButtons = ({
 
         }]}>
             <View style={[styles.mainSubView, {
-                backgroundColor: (currentSelection === pendingFunds) ? (tintColorDark) : ('white')
+                backgroundColor: (currentSelection === pendingReq) ? (tintColorDark) : ('white')
             }]}>
                 <TouchableOpacity
                     onPress={() => btnActionPending()}
-                    style={styles.pendingFundStyle}>
+                    style={styles.pendingReqtyle}>
                     <Text style={[,
-                        { fontSize: 16, color: (currentSelection === pendingFunds) ? ('white') : ('#1C2E47'), textAlign: 'center' }]}>
-                        {pendingFunds}
+                        { fontSize: 16, color: (currentSelection === pendingReq) ? ('white') : ('#1C2E47'), textAlign: 'center' }]}>
+                        {pendingReq}
                     </Text>
-                    <Text style={[{ fontSize: 22, fontWeight: '700', color: (currentSelection === pendingFunds) ? ('white') : ('#eb7a7a') }]}>
-                        {pendingFundAmount}
+                    <Text style={[{ fontSize: 22, fontWeight: '700', color: (currentSelection === pendingReq) ? ('white') : ('#eb7a7a') }]}>
+                        {pendingReqNum  || 0}
                     </Text>
                 </TouchableOpacity>
             </View>
 
             <View style={{ height: '100%', width: 1, backgroundColor: '#D1D1D6' }} />
 
-            <View style={[styles.settledFundsView, {
-                backgroundColor: (currentSelection === settledFunds) ? (tintColorDark) : ('white')
+            <View style={[styles.approvedReqView, {
+                backgroundColor: (currentSelection === approvedReq) ? (tintColorDark) : ('white')
             }]}>
                 <TouchableOpacity
                     onPress={() => btnActionSettle()}
-                    style={styles.settledFundsStyle}>
-                    <Text style={[{ fontSize: 16, color: (currentSelection === settledFunds) ? ('white') : ('#1C2E47'), textAlign: 'center' }]}>
-                        {settledFunds}
+                    style={styles.approvedReqStyle}>
+                    <Text style={[{ fontSize: 16, color: (currentSelection === approvedReq) ? ('white') : ('#1C2E47'), textAlign: 'center' }]}>
+                        {approvedReq}
                     </Text>
-                    <Text style={[{ fontSize: 22, fontWeight: '700', color: (currentSelection === settledFunds) ? ('white') : (tintColorDark) }]}>{settledFundAmount}
+                    <Text style={[{ fontSize: 22, fontWeight: '700', color: (currentSelection === approvedReq) ? ('white') : (tintColorDark) }]}>
+                        {approvedReqNum  || 0}
                     </Text>
                 </TouchableOpacity>
             </View>
@@ -108,21 +109,21 @@ const styles = StyleSheet.create({
         borderRadius: 10,
 
     },
-    pendingFundStyle: {
+    pendingReqtyle: {
         flex: 1,
         width: '100%',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
     },
-    settledFundsView: {
+    approvedReqView: {
         flex: 0.5,
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 10,
     },
-    settledFundsStyle: {
+    approvedReqStyle: {
         flex: 1,
         width: '100%',
         flexDirection: 'column',

@@ -1,3 +1,4 @@
+import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { useIsFocused } from "@react-navigation/native";
 import { Formik } from "formik";
 import React, { useEffect, useRef, useState } from "react";
@@ -8,9 +9,12 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Image
 } from "react-native";
 import { CountryPicker } from "react-native-country-codes-picker";
 import CountrySelector from "react-native-country-picker-modal";
+import LinearGradient from "react-native-linear-gradient";
+import { Card } from "react-native-paper";
 import * as Progress from "react-native-progress";
 import Toast from "react-native-root-toast";
 import * as yup from "yup";
@@ -22,7 +26,7 @@ import {
   useCheckRefillEligibityQuery,
   useRequestRefillCardsMutation,
 } from "../../../redux/cards/cardsApiSlice";
-import { hp } from "../../../utils";
+import { hp, wp } from "../../../utils";
 import { getFlagEmoji } from "../../helpers/misc";
 
 export default function RequestCards(props) {
@@ -54,12 +58,12 @@ export default function RequestCards(props) {
 
   useEffect(() => {
     if (refillEligibilitySuccess) {
+
       setCardsSold(refillEligibilityData?.cards_sold);
-      setCardsPending(refillEligibilityData?.cards_pending);
+      setCardsPending( refillEligibilityData?.cards_fulfilled - refillEligibilityData?.cards_sold);
 
       const total_cards =
-        refillEligibilityData?.cards_sold +
-        refillEligibilityData?.cards_pending;
+        refillEligibilityData?.cards_fulfilled
       const percentage = (
         (refillEligibilityData?.cards_sold / total_cards) *
         100
@@ -86,30 +90,52 @@ export default function RequestCards(props) {
   });
 
   const createCardReuest = async (values: object) => {
-    console.log("fahad values: ", values);
-    console.log("fahad country code: ", countryCode);
 
     try {
       if (values?.cards_amount <= 50) {
-        var newBody = { ...values };
 
-        newBody.phone = countryCode + values?.phone;
+        var body = {
+          address1: values.address1,
+          cards_amount: values.cards_amount,
+          city: values.city,
+          country: values.country,
+        }
 
-        const resp = await requestRefillCards(newBody);
+        if (!!values?.phone) {
+          body.phone = countryCode + values?.phone
+        }
 
-        if (resp?.data === null) {
-          Toast.show("Your card is created successfully.", {
+        if (!!values?.address2) {
+          body.address2 = values?.address2
+        }
+        if (!!values?.zip) {
+          body.zip = values?.zip
+        }
+
+        const resp = await requestRefillCards(body);
+
+        if (!!resp?.error) {
+          Toast.show(resp?.error.data.message, {
             duration: Toast.durations.LONG,
             position: Toast.positions.BOTTOM,
           });
-          props.navigation.goBack();
+        } else {
+          if (resp?.data === null) {
+            Toast.show("Your card Request is created successfully.", {
+              duration: Toast.durations.LONG,
+              position: Toast.positions.BOTTOM,
+            });
+            props.navigation.goBack();
+          }
         }
-      } else {
-        Toast.show("Cards amount must be less than or equal to 50", {
-          duration: Toast.durations.LONG,
-          position: Toast.positions.BOTTOM,
-        });
+        //  else {
+        //   Toast.show("Cards amount must be less than or equal to 50", {
+        //     duration: Toast.durations.LONG,
+        //     position: Toast.positions.BOTTOM,
+        //   });
+        // }
       }
+
     } catch (e) {
       console.log("creatCardError--->", e);
     }
@@ -179,8 +205,6 @@ export default function RequestCards(props) {
                   onSelect={(c) => {
                     setCountry(c);
 
-                    console.log("Fahad country: ", c);
-                    console.log("Fahad country name: ", c.name);
                     setCountryName(c.name);
                     setCountryCode(c.callingCode[0]);
 
@@ -290,7 +314,7 @@ export default function RequestCards(props) {
                     autoCapitalize={"none"}
                     placeholder={t("Phone number")}
                     keyboardType="number-pad"
-                    // onPressIn={() => setShow(true)}
+                  // onPressIn={() => setShow(true)}
                   />
                 </TouchableOpacity>
                 {errors.phone && touched.phone && (
@@ -400,25 +424,43 @@ export default function RequestCards(props) {
         leftButton={() => props.navigation.goBack()}
       />
       <View style={{ padding: 15 }}>
-        <Text style={{ fontSize: 14, fontWeight: "500" }}>
+      
+      <Image
+      style={{
+        width: '100%',
+        height: "70%",
+        // backgroundColor: '#909011'
+      }}
+      resizeMode="contain"
+                    source={require("../../../assets/images/salesGraph.jpg")}
+                  />
+      
+      <View style={{marginTop:0,marginHorizontal:40 ,alignItems:'center'}}>
+
+      <Text style={{ fontSize: 30,textAlign:'center', fontWeight: "800", marginTop: 10 }}>
+          {t("Keep Selling")}
+        </Text>
+
+<Text style={{ fontSize: 14,textAlign:'center', fontWeight: "500", marginTop: 20 }}>
           {t("You need to sell")} {cards_pending}{" "}
           {t(
             "more cards in order to request new cards. Only paid sales are taken into account.",
           )}
+        
         </Text>
-        <View style={styles.statusContainer}>
-          <Text style={{ color: "green", fontSize: 12, fontWeight: "600" }}>
-            {t("Sold")}: {cards_sold}
+</View>
+        {/* <View style={{justifyContent:'center',alignItems:'center',flex:1,marginTop:20}}>
+        <Text style={{ color: tintColorDark, fontSize: 40, fontWeight: "600" }}>
+            {t(" Cards Stats")}
           </Text>
-          <Text style={{ color: "red", fontSize: 12, fontWeight: "600" }}>
-            {t("Pending")}: {cards_pending}
-          </Text>
-        </View>
+          </View> */}
+     
+        
         <View
           style={{
             alignItems: "center",
             justifyContent: "center",
-            marginTop: 10,
+            marginTop: 30,
           }}
         >
           <Progress.Bar
@@ -427,12 +469,147 @@ export default function RequestCards(props) {
             height={15}
             color={tintColorDark}
             unfilledColor={"#d1d1d1"}
-            borderWidth={1}
+            borderColor="#d1d1d1"
+            // borderWidth={1}
           />
-          <Text style={{ color: "black", fontSize: 12, fontWeight: "600" }}>
+          <Text style={{ color: "black", fontSize: 12, fontWeight: "600", marginTop: 10 }}>
             {progress}% {t("sold")}
           </Text>
         </View>
+
+        <View style={styles.statusContainer}>
+          <Text style={{ color: "green", fontSize: 12, fontWeight: "600" }}>
+            {t("Sold")}: {cards_sold}
+          </Text>
+          <Text style={{ color: "red", fontSize: 12, fontWeight: "600" }}>
+            {t("Remaining")}: {cards_pending}
+          </Text>
+        </View>
+
+        {/* Bilal Progress Bar */}
+        {/* <Card style={{
+          alignSelf:'center',
+          marginTop:hp(8),
+          paddingHorizontal: 40,
+          backgroundColor:'white',
+          width:'95%',
+          alignSelf:'center',
+        }}>
+           <View style={{justifyContent:'center',alignItems:'center', marginTop:20}}>
+
+<Text style={{ color: tintColorDark, fontSize: 36, fontWeight: "600" }}>
+            {t(" Cards Stats")}
+          </Text>
+</View>
+          <View
+            style={{
+              marginTop:40,
+              marginBottom:20,
+              justifyContent: "center",
+              alignItems: "center",
+              // backgroundColor: colors.appText.Primary,
+              // borderColor: colors.appText.Primary,
+            }}
+          >  
+            <Progress.Circle
+              style={{
+                position: "absolute",
+              }}
+              fill="none"
+              borderWidth={
+                // borderWidth ? borderWidth : 3
+                0
+              }
+              progress={50 / 100}
+              showsText={
+                // showsText ? showsText : true
+                false
+              }
+              size={220}
+              animated={true}
+              color={"#53ae5b"}
+              // borderColor={"#EAEAEA"}
+              // unfilledColor={"#53ae5b77"}
+              // color={tintColorDark}
+              unfilledColor={"#d1d1d1"}
+              thickness={8}
+            />
+            <LinearGradient
+              // colors={["#264AA2", "#6740B4"]}
+              colors={[tintColorDark,"#d1d1d1"]}
+              start={{ x: 0, y: 0.5 }}
+              end={{ x: 1, y: 0.5 }}
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                // padding: 10,
+                width: 200,
+                height: 200,
+                borderRadius: 200 / 2,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                variant="displaySmall"
+                style={{
+                  color: "#FFF",
+                  textAlign: "center",
+                  fontSize:18,
+                  fontWeight: "700",
+                  // lineHeight: RFValue(100)
+                }}
+              >
+                {progress + '%'}
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  paddingTop: 5,
+                  // backgroundColor: "#811112"
+                }}
+              >
+              
+                <Text
+                  variant="titleMedium"
+                  style={{
+                    color: "#FFF",
+
+                    //               color: "#FFF",
+                    //               textShadowColor:'#585858',
+                    // textShadowOffset:{width: 0, height: 0},
+                    // textShadowRadius:4,
+                  }}
+                >
+                  {t('Cards Sold')}
+                </Text>
+              </View>
+
+            </LinearGradient>
+          </View>
+       
+          <View style={styles.statusContainer}>
+            <View style={{ width:'50%',flexDirection:'row',justifyContent:'center',alignItems:'center',marginRight:20}}>
+            
+            <View style={{backgroundColor:'#53ae5b',height:10,width:10,marginRight:5}} />
+            <Text style={{ color: "#53ae5b", fontSize: 14, fontWeight: "600" }}>
+            {t("Sold")}: {cards_sold}
+          </Text>
+            </View>
+         
+         <View style={{width:'50%', flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
+
+            <View style={{backgroundColor:'#808080',height:10,width:10,marginRight:5}} />
+         <Text style={{ color: "#808080", fontSize: 14, fontWeight: "600" }}>
+            {t("Remaining")}: {cards_pending}
+          </Text>
+        </View>
+         </View>
+         
+        </Card> */}
+
       </View>
     </ScrollView>
   );
@@ -472,10 +649,14 @@ const styles = StyleSheet.create({
     color: "black",
   },
   statusContainer: {
+    flex:1,
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 90,
-    marginHorizontal: 10,
+    marginTop: 20,
+    marginBottom:20,
+    width:'80%',
+    alignSelf:'center',
+    // marginHorizontal: 10,
   },
   inputViewStyle: {
     flexDirection: "row",
