@@ -1,35 +1,34 @@
+import React, { useEffect, useRef, useState } from "react";
 import {
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  Linking,
-  Share,
-  Platform,
   Alert,
   FlatList,
+  Linking,
+  Platform,
+  ScrollView,
+  Share,
+  StyleSheet,
+  TouchableOpacity,
 } from "react-native";
-import React, { useEffect, useState, useRef } from "react";
 
 import MIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { useIsFocused } from "@react-navigation/native";
 import moment from "moment";
+import { useTranslation } from "react-i18next";
+import RNModal from "react-native-modal";
 import { useDispatch, useSelector } from "react-redux";
 import Header from "../../../components/Header";
 import { Text, View } from "../../../components/Themed";
+import { tintColorDark, tintColorLight } from "../../../constants/Colors";
+import { apiSlice } from "../../../redux/api/apiSlice";
 import { useLogoutUserMutation } from "../../../redux/auth/authApiSlice";
 import { logOut } from "../../../redux/auth/authSlice";
-import { hp, wp } from "../../../utils";
+import { setLanguage } from "../../../redux/language/languageSlice";
 import {
   useGetCurrentUserQuery,
   useGetPayoutMethodQuery,
-  useGetUserMutation,
 } from "../../../redux/user/userApiSlice";
-import { useIsFocused } from "@react-navigation/native";
-import { apiSlice } from "../../../redux/api/apiSlice";
-import RNModal from "react-native-modal";
-import { useTranslation } from "react-i18next";
-import { tintColorDark, tintColorLight } from "../../../constants/Colors";
-import { setLanguage } from "../../../redux/language/languageSlice";
 import { setExpoPushToken } from "../../../redux/user/userSlice";
+import { hp, wp } from "../../../utils";
 import { cancelNotification } from "../../../utils/notifications";
 
 const LangModal: React.FC<{
@@ -242,7 +241,11 @@ export default function Settings(props: any) {
           <TouchableOpacity
             style={styles.backgroundView}
             onPress={() => {
-              props?.navigation?.navigate("AddRequestCard");
+              if (currentUser?.role === "sellerWithoutCards") {
+                props?.navigation?.navigate("RequestCards");
+              } else {
+                props?.navigation?.navigate("AddRequestCard");
+              }
             }}
           >
             <View style={styles.rowView}>

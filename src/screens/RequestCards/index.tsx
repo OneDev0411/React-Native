@@ -297,14 +297,17 @@ export default function RequestCards(props) {
                     value={values.phone}
                     style={{
                       ...styles.inputField,
-
                       width: countryCode ? "95%" : "90%",
                     }}
                     icon
                     iconColor={"#ccc"}
                     iconName="phone"
                     inputViewStyle={{
-                      ...styles.inputViewStyle,
+                      // ...styles.inputViewStyle,
+                      flexDirection: "row",
+                      alignItems: "center",
+                      borderRadius: 10,
+                      backgroundColor: "#f9f9f9",
 
                       // marginTop: 10,
                       width: countryCode ? "70%" : "80%",
