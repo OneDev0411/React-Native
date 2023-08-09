@@ -1,20 +1,17 @@
-import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { useIsFocused } from "@react-navigation/native";
 import { Formik } from "formik";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
+  Image,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  Image,
 } from "react-native";
 import { CountryPicker } from "react-native-country-codes-picker";
 import CountrySelector from "react-native-country-picker-modal";
-import LinearGradient from "react-native-linear-gradient";
-import { Card } from "react-native-paper";
 import * as Progress from "react-native-progress";
 import Toast from "react-native-root-toast";
 import * as yup from "yup";
@@ -26,7 +23,7 @@ import {
   useCheckRefillEligibityQuery,
   useRequestRefillCardsMutation,
 } from "../../../redux/cards/cardsApiSlice";
-import { hp, wp } from "../../../utils";
+import { hp } from "../../../utils";
 import { getFlagEmoji } from "../../helpers/misc";
 
 export default function RequestCards(props) {
@@ -61,7 +58,7 @@ export default function RequestCards(props) {
       setCardsSold(refillEligibilityData?.cards_sold);
       setCardsPending(
         refillEligibilityData?.cards_fulfilled -
-          refillEligibilityData?.cards_sold,
+        refillEligibilityData?.cards_sold,
       );
 
       const total_cards = refillEligibilityData?.cards_fulfilled;
@@ -82,7 +79,6 @@ export default function RequestCards(props) {
     address1: yup.string("Required").required("Address1 is required"),
     // address2: yup.string("Required").required("Address2 is required"),
     city: yup.string("Required").required("City is required"),
-    zip: yup.string("Required").length(5, "Zip code length must be 5"),
     phone: yup
       .string("Required")
       .matches(phoneRegExp, "Phone number is not valid"),
@@ -127,12 +123,11 @@ export default function RequestCards(props) {
             props.navigation.goBack();
           }
         }
-        //  else {
-        //   Toast.show("Cards amount must be less than or equal to 50", {
-        //     duration: Toast.durations.LONG,
-        //     position: Toast.positions.BOTTOM,
-        //   });
-        // }
+      } else {
+        Toast.show("Cards amount must be less than or equal to 50", {
+          duration: Toast.durations.LONG,
+          position: Toast.positions.BOTTOM,
+        });
       }
     } catch (e) {
       console.log("creatCardError--->", e);
@@ -142,15 +137,16 @@ export default function RequestCards(props) {
   //
   return isEligible === true ? (
     <View style={{ flex: 1, backgroundColor: "white" }}>
+      <Header
+        title={t("Create New Request Card")}
+        leftButton={() => props.navigation.goBack()}
+      />
       <ScrollView
         style={[styles.container]}
         keyboardShouldPersistTaps="always"
         showsVerticalScrollIndicator={false}
       >
-        <Header
-          title={t("Create New Request Card")}
-          leftButton={() => props.navigation.goBack()}
-        />
+
         <View style={styles.inputContainer}>
           <Formik
             innerRef={_formik}
@@ -222,7 +218,7 @@ export default function RequestCards(props) {
                   <Text style={styles.errorText}>{t(errors.country)}</Text>
                 )}
 
-                <Text style={styles.credsFont}>{t("Address 1")}</Text>
+                <Text style={styles.credsFont}>{t("Address Line 1")}</Text>
                 <Input
                   onChangeText={(text) => handleChange("address1")(text)}
                   onBlur={handleBlur("address1")}
@@ -238,7 +234,18 @@ export default function RequestCards(props) {
                 {errors.address1 && touched.address1 && (
                   <Text style={styles.errorText}>{errors.address1}</Text>
                 )}
-                <Text style={styles.credsFont}>{t("Address 2")}</Text>
+                <View style={{
+                  flexDirection: 'row',
+                  alignItems: 'center'
+                }}>
+                  <Text style={{ ...styles.credsFont, marginTop: 10 }}>
+                    {t("Address Line 2 ")}
+                  </Text>
+
+                  <Text style={{ ...styles.credsFont, marginTop: 10, fontSize: hp(1.5), color: 'gray' }}>
+                    {t("(optional)")}
+                  </Text>
+                </View>
                 <Input
                   onChangeText={(text) => handleChange("address2")(text)}
                   onBlur={handleBlur("address2")}
@@ -273,7 +280,18 @@ export default function RequestCards(props) {
                   <Text style={styles.errorText}>{errors.city}</Text>
                 )}
 
-                <Text style={styles.credsFont}>{t("Phone number")}</Text>
+                <View style={{
+                  flexDirection: 'row',
+                  alignItems: 'center'
+                }}>
+                  <Text style={{ ...styles.credsFont, marginTop: 10 }}>
+                    {t("Phone number ")}
+                  </Text>
+
+                  <Text style={{ ...styles.credsFont, marginTop: 10, fontSize: hp(1.5), color: 'gray' }}>
+                    {t("(optional)")}
+                  </Text>
+                </View>
                 <TouchableOpacity
                   style={[
                     styles.inputViewStyle,
@@ -315,16 +333,26 @@ export default function RequestCards(props) {
                     autoCapitalize={"none"}
                     placeholder={t("Phone number")}
                     keyboardType="number-pad"
-                    // onPressIn={() => setShow(true)}
+                  // onPressIn={() => setShow(true)}
                   />
                 </TouchableOpacity>
                 {errors.phone && touched.phone && (
                   <Text style={styles.errorText}>{errors.phone}</Text>
                 )}
 
-                <Text style={{ ...styles.credsFont, marginTop: 10 }}>
-                  {t("Zip Code")}
-                </Text>
+                <View style={{
+                  flexDirection: 'row',
+                  alignItems: 'center'
+                }}>
+                  <Text style={{ ...styles.credsFont, marginTop: 10 }}>
+                    {t("Zip Code ")}
+                  </Text>
+
+                  <Text style={{ ...styles.credsFont, marginTop: 10, fontSize: hp(1.5), color: 'gray' }}>
+                    {t("(optional)")}
+                  </Text>
+                </View>
+
                 <Input
                   onChangeText={(text) => handleChange("zip")(text)}
                   onBlur={handleBlur("zip")}
@@ -483,7 +511,7 @@ export default function RequestCards(props) {
             color={tintColorDark}
             unfilledColor={"#d1d1d1"}
             borderColor="#d1d1d1"
-            // borderWidth={1}
+          // borderWidth={1}
           />
           <Text
             style={{

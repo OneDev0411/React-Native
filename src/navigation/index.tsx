@@ -278,6 +278,7 @@ export default function StackNavigator(props: any) {
 		};
 	}, []);
 
+	console.log("fahad login user: ", loginUser);
 	return (
 		<Stack.Navigator
 			// initialRouteName="AuthStack"
