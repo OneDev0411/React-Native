@@ -1,3 +1,4 @@
+import currencies from '../../constants/currencies';
 import pricing from '../../constants/pricing';
 
 export const getCurrencySymbol = (currency: string): string => {
@@ -26,10 +27,7 @@ export const getCurrencyByCountry = (country: {
 	region: string;
 	subregion: string;
 }) => {
-	if (country.name == 'United Arab Emirates') return 'AED';
-	if (country.name == 'Morocco') return 'MAD';
-	if (country.name == 'Canada') return 'CAD';
-	if (country.name == 'New Zealand') return 'NZD';
+	if (currencies.includes(country.currency[0])) return country.currency[0];
 	if (country.region == 'Europe') return 'EUR';
 	return 'USD';
 };
