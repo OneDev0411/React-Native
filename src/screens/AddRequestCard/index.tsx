@@ -87,7 +87,7 @@ export default function AddRequestCard(props) {
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
       setCardRequests(sortedResults);
-    } else if (value === "Approved") {
+    } else if (value === "Fulfilled") {
       const filteredData = localData.filter((obj) => obj.status === "approved");
 
       const sortedResults = filteredData
@@ -139,13 +139,13 @@ export default function AddRequestCard(props) {
                   fontSize: 12,
                 }}
               >
-                {item.status}
+                {t(item.status == "approved" ? "Fulfilled" : "Pending")}
               </Text>
             </View>
           </View>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Icon name={"numeric"} color={tintColorDark} size={22} />
-            <Text style={styles.text}>{item.cards_amount} cards</Text>
+            <Text style={styles.text}>{item.cards_amount} {t('cards')}</Text>
           </View>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Icon name={"map-marker"} color={tintColorDark} size={22} />

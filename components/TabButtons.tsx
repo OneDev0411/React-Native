@@ -67,7 +67,7 @@ const TabButtons = ({
                     <Text style={[{ fontSize: 16, color: (currentSelection === approvedReq) ? ('white') : ('#1C2E47'), textAlign: 'center' }]}>
                         {approvedReq}
                     </Text>
-                    <Text style={[{ fontSize: 22, fontWeight: '700', color: (currentSelection === approvedReq) ? ('white') : (tintColorDark) }]}>
+                    <Text style={[{ fontSize: 22, fontWeight: '700', color: (currentSelection === approvedReq) ? ('white') : ('#50c35c') }]}>
                         {approvedReqNum  || 0}
                     </Text>
                 </TouchableOpacity>

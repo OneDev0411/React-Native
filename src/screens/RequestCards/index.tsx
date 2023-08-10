@@ -450,7 +450,7 @@ export default function RequestCards(props) {
 		</View>
 	) : (
 		<>
-			<Header title={t('Pending Cards')} leftButton={() => props.navigation.goBack()} />
+			<Header title={t('Request Cards')} leftButton={() => props.navigation.goBack()} />
 			<ScrollView
 				style={styles.container}
 				keyboardShouldPersistTaps="always"
@@ -470,13 +470,13 @@ export default function RequestCards(props) {
 					<View style={{ marginTop: 0, marginHorizontal: 40, alignItems: 'center' }}>
 						<Text
 							style={{
-								fontSize: 30,
+								fontSize: 24,
 								textAlign: 'center',
-								fontWeight: '800',
-								marginTop: 10,
+								fontWeight: '700',
+								marginTop: 14,
 							}}
 						>
-							{t('Keep Selling')}
+							{t('Keep Selling')}!
 						</Text>
 
 						<Text

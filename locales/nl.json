@@ -45,7 +45,7 @@
 	"No Sales yet": "Nog geen Sales",
 	"Paid": "Betaald",
 	"Not Paid": "Niet betaald",
-	"cards": "cards",
+	"cards": "kaarten",
 	"Create Sale": "Sale maken",
 	"Email address of business": "E-mailadres van bedrijf",
 	"Phone number of business": "Telefoonnummer van bedrijf",
@@ -96,8 +96,8 @@
 	"Sold": "Verkocht",
 	"sold": "verkocht",
 	"Pending": "In behandeling",
-	"You need to sell": "Je moet verkopen",
-	"more cards in order to request new cards. Only paid sales are taken into account.": "meer kaarten om nieuwe kaarten aan te vragen. Alleen betaalde verkopen tellen mee.",
+	"You need to sell": "Je moet nog",
+	"more cards in order to request new cards. Only paid sales are taken into account.": "kaarten verkopen om nieuwe kaarten aan te vragen. Alleen betaalde verkopen tellen mee.",
 	"Create": "Creëren",
 	"Account": "Account",
 	"Name": "Naam",
@@ -169,5 +169,8 @@
 	"Copied to clipboard": "Gekopieerd naar klembord",
 	"Users Referred": "Gebruikers doorverwezen",
 	"Pending Commission": "Pending commissie",
-	"Earned Commission": "Verdiende commissie"
+	"Earned Commission": "Verdiende commissie",
+	"Keep Selling": "Blijf verkopen",
+	"Remaining": "Resterend",
+	"Fulfilled": "Fulfilled"
 }
