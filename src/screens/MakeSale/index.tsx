@@ -1,5 +1,6 @@
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { useEffect, useState } from "react";
+import { useIsFocused } from "@react-navigation/native";
 import Button from "../../../components/Button";
 import {
   StyleSheet,
@@ -47,6 +48,7 @@ export default function MakeSale(props: any) {
   // const salesFromStore = useSelector((state) => state.sale.currentSales);
 
   const language = useSelector((state: { language: string }) => state.language);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     if (language !== i18n.language) i18n.changeLanguage(language);
@@ -118,6 +120,11 @@ export default function MakeSale(props: any) {
     setSales(saleData);
   }, [saleData]);
 
+  useEffect(() => {
+    if (isFocused) {
+      refetch();
+    }
+  }, [isFocused]);
 
   // const getSalesApi = async () => {
   //   setIsFetching(true);

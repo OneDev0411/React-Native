@@ -67,15 +67,18 @@ function TabBarIcon(props: {
 }) {
   return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
 }
-import { useTranslation } from "react-i18next";
-import ForgotPassword from "../screens/ForgotPassword";
-import { isDevice } from "expo-device";
-import { Platform } from "react-native";
-import { setExpoPushToken } from "../../redux/user/userSlice";
-import { useNavigation } from "@react-navigation/native";
-import { Linking } from "react-native";
-import { setReferralCode } from "../../redux/auth/authSlice";
-import { scheduleSaleReminderNotification } from "../../utils/notifications";
+
+import { useTranslation } from 'react-i18next';
+import ForgotPassword from '../screens/ForgotPassword';
+import { isDevice } from 'expo-device';
+import { Platform } from 'react-native';
+import { setExpoPushToken } from '../../redux/user/userSlice';
+import { useNavigation } from '@react-navigation/native';
+import { Linking } from 'react-native';
+import { setReferralCode } from '../../redux/auth/authSlice';
+import { scheduleSaleReminderNotification } from '../../utils/notifications';
+import AddRequestCard from '../screens/AddRequestCard';
+import RequestCards from '../screens/RequestCards';
 
 function TabStack(props: any) {
   const { t } = useTranslation();
@@ -183,17 +186,18 @@ function AppStack() {
       <Stack.Screen name="Sale" component={Sale} />
       <Stack.Screen name="TakePayment" component={TakePayment} />
       <Stack.Screen name="WriteCards" component={WriteCards} />
-
-      <Stack.Screen name="SaleDetail" component={SaleDetail} />
-      <Stack.Screen name="Partners" component={Partners} />
-      <Stack.Screen name="PartnerDetail" component={PartnerDetail} />
-      <Stack.Screen name="UserPayouts" component={UserPayouts} />
-      <Stack.Screen name="Payouts" component={Payouts} />
-      <Stack.Screen name="BankDetail" component={BankDetail} />
-      <Stack.Screen name="Notifications" component={NotificationScreen} />
-      {/* <Stack.Screen name="ChangeCurrency" component={ChangeCurrency} /> */}
-    </Stack.Navigator>
-  );
+			<Stack.Screen name="SaleDetail" component={SaleDetail} />
+			<Stack.Screen name="Partners" component={Partners} />
+			<Stack.Screen name="AddRequestCard" component={AddRequestCard} />
+			<Stack.Screen name="RequestCards" component={RequestCards} />
+			<Stack.Screen name="PartnerDetail" component={PartnerDetail} />
+			<Stack.Screen name="UserPayouts" component={UserPayouts} />
+			<Stack.Screen name="Payouts" component={Payouts} />
+			<Stack.Screen name="BankDetail" component={BankDetail} />
+			<Stack.Screen name="Notifications" component={NotificationScreen} />
+			{/* <Stack.Screen name="ChangeCurrency" component={ChangeCurrency} /> */}
+		</Stack.Navigator>
+	);
 }
 
 export default function StackNavigator(props: any) {

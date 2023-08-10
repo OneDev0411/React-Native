@@ -47,9 +47,10 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: hp(3),
   },
   headerText: {
+    // width: '100%',
     color: "white",
-    fontWeight: "700",
-    fontSize: hp(2.25),
+    fontWeight: "600",
+    fontSize: hp(2.0),
     // marginTop: 5,
   },
 });

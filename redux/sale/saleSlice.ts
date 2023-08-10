@@ -14,6 +14,7 @@ const saleSlice = createSlice({
     setCurrentSales: (state, action) => {
       state.currentSales = action.payload;
     },
+    
   },
 });
 

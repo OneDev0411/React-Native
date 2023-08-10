@@ -38,7 +38,6 @@ export default function SaleDetail(props: any) {
   } = useGetSaleDetailQuery(props?.route?.params?.sale?._id);
 
   const [deleteSale, deleteSaleResp] = useDeleteSaleMutation();
-
   const user = useSelector((state) => state?.auth?.loginUser);
 
   const [resendPaymentRequest, resendPaymentRequestResp] =
