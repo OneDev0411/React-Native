@@ -1,6 +1,5 @@
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { useEffect, useState } from "react";
-import { useIsFocused } from "@react-navigation/native";
 import Button from "../../../components/Button";
 import {
   StyleSheet,
@@ -21,9 +20,7 @@ import {
 } from "../../../redux/sale/saleApiSlice";
 
 import Header from "../../../components/Header";
-import { setCurrentSales } from "../../../redux/sale/saleSlice";
 import { tintColorDark } from "../../../constants/Colors";
-import { useGetSalesMutation } from "../../../redux/sale/saleApiSlice";
 import { formatDateTime, hp, wp } from "../../../utils";
 import {
   formatNumber,
@@ -42,9 +39,6 @@ import { useIsFocused } from "@react-navigation/native";
 
 export default function MakeSale(props: any) {
   const { t, i18n } = useTranslation();
-
-  const isFocused = useIsFocused();
-
   // const salesFromStore = useSelector((state) => state.sale.currentSales);
 
   const language = useSelector((state: { language: string }) => state.language);

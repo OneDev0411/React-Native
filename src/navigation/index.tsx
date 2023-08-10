@@ -21,18 +21,11 @@ import Payouts from "../screens/Payouts";
 import WriteCards from "../screens/WriteCards";
 
 import Constants from "expo-constants";
-import { isDevice } from "expo-device";
 import * as Notifications from "expo-notifications";
-import { useTranslation } from "react-i18next";
-import { Linking, Platform } from "react-native";
-import { setReferralCode } from "../../redux/auth/authSlice";
 import {
   useGetUserEmployeeQuery,
   useUpdateNotificationSettingsMutation,
 } from "../../redux/user/userApiSlice";
-import { setExpoPushToken } from "../../redux/user/userSlice";
-import { scheduleSaleReminderNotification } from "../../utils/notifications";
-import ForgotPassword from "../screens/ForgotPassword";
 import NotificationScreen from "../screens/Notifications";
 import PartnerDetail from "../screens/PartnerDetail";
 import Partners from "../screens/Partners";
