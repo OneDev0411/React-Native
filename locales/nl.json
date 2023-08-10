@@ -90,9 +90,8 @@
 	"Enter your city": "Voer uw stad in",
 	"Zip Code": "Postcode",
 	"Enter your zip code": "Vul je postcode in",
-	"Cards Amount": "Kaarten Bedrag",
-	"Enter the card amount": "Voer het kaartbedrag in",
-	"Create New Request Card": "Nieuwe aanvraagkaart maken",
+	"Cards Amount": "Hoeveelheid kaarten",
+	"Enter the card amount": "Voer de kaart hoeveelheid in",
 	"Sold": "Verkocht",
 	"sold": "verkocht",
 	"Pending": "In behandeling",
@@ -175,5 +174,6 @@
 	"Fulfilled": "Fulfilled",
 	"Are you sure you want to cancel this sale ? This action is irreversible": "Weet je zeker dat je deze verkoop wilt annuleren? Deze actie is onomkeerbaar",
 	"Recent Transactions": "Recente transacties",
-	"Payout": "Uitbetaling"
+	"Payout": "Uitbetaling",
+	"Put in your shipping details and we will send you cards so you can start selling!": "Vul uw verzendgegevens in en wij sturen u kaarten zodat u kunt beginnen met verkopen!"
 }

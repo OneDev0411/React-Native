@@ -125,7 +125,7 @@ export default function RequestCards(props) {
 	return isEligible === true ? (
 		<View style={{ flex: 1, backgroundColor: 'white' }}>
 			<Header
-				title={t('Create New Request Card')}
+				title={t('Request Cards')}
 				leftButton={() => props.navigation.goBack()}
 			/>
 			<ScrollView
@@ -152,18 +152,18 @@ export default function RequestCards(props) {
 					>
 						{({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
 							<View>
-								<Text style={styles.credsFont}>{t('Country')}</Text>
 								<Text
 									style={{
 										fontSize: 12,
-										color: '#aaa',
+										color: '#777',
 										marginBottom: 6,
 									}}
 								>
 									{t(
-										'Please select the country where you will make sales. This can be different from your country of nationality.'
+										'Put in your shipping details and we will send you cards so you can start selling!'
 									)}
 								</Text>
+								<Text style={styles.credsFont}>{t('Country')}</Text>
 								<CountrySelector
 									containerButtonStyle={{
 										...styles.inputField,

@@ -90,8 +90,8 @@
 	"Enter your city": "Entrez dans votre ville",
 	"Zip Code": "Code postal",
 	"Enter your zip code": "Entrez votre code postal",
-	"Cards Amount": "Montant des cartes",
-	"Enter the card amount": "Entrez le montant de la carte",
+	"Cards Amount": "Nombre de cartes",
+	"Enter the card amount": "Entrez le nombre de cartes",
 	"Create New Request Card": "Créer une nouvelle carte de demande",
 	"Sold": "Vendu",
 	"sold": "vendu",
@@ -175,5 +175,6 @@
 	"Fulfilled": "Envoyé",
 	"Are you sure you want to cancel this sale ? This action is irreversible": "Êtes-vous sûr de vouloir annuler cette vente ? Cette action est irréversible",
 	"Recent Transactions": "Transactions récentes",
-	"Payout": "Paiement"
+	"Payout": "Paiement",
+	"Put in your shipping details and we will send you cards so you can start selling!": "Entrez vos coordonnées de livraison et nous vous enverrons des cartes pour que vous puissiez commencer à vendre!"
 }

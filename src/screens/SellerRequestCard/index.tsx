@@ -221,7 +221,7 @@ export default function SellerRequestCard(props) {
       ) : (
         <View style={{ flex: 1, backgroundColor: "white" }}>
           <Header
-            title={t("Create New Request Card")}
+            title={t("Request Cards")}
           />
           <ScrollView
             style={[styles.container]}
@@ -256,17 +256,6 @@ export default function SellerRequestCard(props) {
                 }) => (
                   <View>
                     <Text style={styles.credsFont}>{t("Country")}</Text>
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        color: "#aaa",
-                        marginBottom: 6,
-                      }}
-                    >
-                      {t(
-                        "Please select the country where you will make sales. This can be different from your country of nationality.",
-                      )}
-                    </Text>
                     <CountrySelector
                       containerButtonStyle={{
                         ...styles.inputField,
