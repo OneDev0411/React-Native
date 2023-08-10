@@ -14,7 +14,7 @@ import "./i18n.config";
 import { LogBox } from "react-native";
 import { isDevice } from "expo-device";
 
-LogBox.ignoreAllLogs(true)
+LogBox.ignoreAllLogs(true);
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({

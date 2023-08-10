@@ -83,6 +83,13 @@ export const userSliceApi = apiSlice.injectEndpoints({
 				method: 'GET',
 			}),
 		}),
+		getPayouts: builder.query({
+			query: (data) => ({
+				url: `/users/payouts?page=${data.page}&limit=${data.limit}&sortBy=${data.sortBy}`,
+				method: 'GET',
+			}),
+			providesTags: ['Payouts'],
+		}),
 	}),
 	overrideExisting: true,
 });
@@ -100,4 +107,5 @@ export const {
 	useUpdateNotificationSettingsMutation,
 	useGetNotificationSettingsQuery,
 	useGetReferralCodeQuery,
+	useGetPayoutsQuery,
 } = userSliceApi;

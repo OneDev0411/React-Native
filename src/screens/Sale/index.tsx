@@ -75,6 +75,16 @@ export default function Sale(props: any): JSX.Element {
       ),
     },
     {
+      label: "2 Google Popcards",
+      value: 2,
+      icon: () => (
+        <Image
+          source={require("../../../assets/cards/card-2.png")}
+          style={{ height: 50, width: 50 }}
+        />
+      ),
+    },
+    {
       label: "3 Google Popcards",
       value: 3,
       icon: () => (

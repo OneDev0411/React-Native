@@ -1,12 +1,13 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { baseUrl } from '../../constants';
-import { setAccessToken, setRefreshToken, logOut } from '../auth/authSlice';
 import moment from 'moment';
+import { baseUrl } from '../../constants';
+import { logOut, setAccessToken, setRefreshToken } from '../auth/authSlice';
 const baseQuery = fetchBaseQuery({
 	baseUrl: baseUrl,
 	prepareHeaders: (headers, { getState }) => {
 		const token = getState()?.auth?.accessToken?.token;
 		if (token) {
+			// console.log("My App Token: ", token);
 			headers.set('Authorization', `Bearer ${token}`);
 		}
 		return headers;
@@ -40,6 +41,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 				if (refreshResult.data) {
 					api.dispatch(setAccessToken(refreshResult?.data?.tokens?.access));
 					api.dispatch(setRefreshToken(refreshResult?.data?.tokens?.refresh));
+
 					while (tokenRefreshQueue.length) {
 						const { resolve } = tokenRefreshQueue.shift();
 						resolve();
