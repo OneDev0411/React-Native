@@ -118,12 +118,6 @@ export default function MakeSale(props: any) {
     setSales(saleData);
   }, [saleData]);
 
-  useEffect(() => {
-
-    if(isFocused) {
-      refetch();
-    }
-  }, [isFocused]);
 
   // const getSalesApi = async () => {
   //   setIsFetching(true);
