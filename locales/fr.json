@@ -172,5 +172,8 @@
 	"Earned Commission": "Commission gagnée",
 	"Keep Selling": "Continuez à vendre",
 	"Remaining": "Restant",
-	"Fulfilled": "Envoyé"
+	"Fulfilled": "Envoyé",
+	"Are you sure you want to cancel this sale ? This action is irreversible": "Êtes-vous sûr de vouloir annuler cette vente ? Cette action est irréversible",
+	"Recent Transactions": "Transactions récentes",
+	"Payout": "Paiement"
 }

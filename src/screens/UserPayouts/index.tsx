@@ -93,7 +93,7 @@ export default function UserPayouts(props: any) {
 				}}
 			>
 				<View style={{ justifyContent: 'center' }}>
-					<Text style={{ fontSize: 22 }}>{'Recent Transactions'}</Text>
+					<Text style={{ fontSize: 22 }}>{t('Recent Transactions')}</Text>
 				</View>
 
 				{/* <Icon
@@ -166,6 +166,7 @@ export default function UserPayouts(props: any) {
 				<FlatList
 					data={payoutsListData}
 					style={{}}
+					showsVerticalScrollIndicator={false}
 					contentContainerStyle={{ paddingBottom: 10 }}
 					renderItem={({ item, index }) => {
 						return (
@@ -198,7 +199,7 @@ export default function UserPayouts(props: any) {
 									<View
 										style={{ flex: 0.4, padding: 5, alignItems: 'flex-start' }}
 									>
-										<Text style={{ fontSize: 20 }}>{'Payout'}</Text>
+										<Text style={{ fontSize: 20 }}>{t('Payout')}</Text>
 										<Text
 											style={{ fontSize: 14, marginTop: 1, color: '#8D9683' }}
 										>
@@ -241,9 +242,6 @@ export default function UserPayouts(props: any) {
 					keyExtractor={(item, index) => index.toString()}
 					refreshControl={
 						<RefreshControl
-							tintColor={'#000000'}
-							title={'Refreshing...'}
-							titleColor={'#000000'}
 							refreshing={false}
 							onRefresh={() => {
 								setPage(1);
