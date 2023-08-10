@@ -127,10 +127,8 @@ export default function SaleDetail(props: any) {
         <Header
           title={t("Sale Detail")}
           leftButton={() => props.navigation.goBack()}
-          rightButton={(saleDetail?.payment_link?.paid) ? (
-            null
-          ) : () => {
-            Alert.alert(t("Are you sure ?"), "", [
+          rightButton={(saleDetail?.payment_link?.paid == false) && (() => {
+            Alert.alert(t("Are you sure you want to cancel this sale ? This action is irreversible"), "", [
               {
                 text: t("Cancel")!,
                 style: "cancel",
@@ -143,7 +141,7 @@ export default function SaleDetail(props: any) {
                 },
               },
             ]);
-          }
+          })
           }
         />
         {isLoading ? (
