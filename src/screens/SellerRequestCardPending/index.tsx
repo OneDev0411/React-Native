@@ -78,7 +78,7 @@ export default function SellerRequestCardPending(props) {
               marginTop: 20,
               padding: 20,
             }}
-          >Your card request has been received by our team. You’ll be able to access the app once your cards are shipped</Text>
+          >Your card request has been received by our team. You'll be able to access the app once your cards are shipped</Text>
         </View>
         {/* </Card> */}
 
