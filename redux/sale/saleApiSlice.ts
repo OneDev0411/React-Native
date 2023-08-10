@@ -43,6 +43,12 @@ export const saleApiSlice = apiSlice.injectEndpoints({
         // body: { ...data },
       }),
     }),
+    deleteSale: builder.mutation({
+			query: (id) => ({
+				url: `/sales/${id}`,
+				method: 'DELETE',
+			}),
+		}),
   }),
   overrideExisting: true,
 });
@@ -56,4 +62,5 @@ export const {
   useResendPaymentRequestMutation,
   useGetClientInfoMutation,
   useMarkAsPaidMutation,
+  useDeleteSaleMutation,
 } = saleApiSlice;

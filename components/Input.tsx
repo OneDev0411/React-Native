@@ -22,7 +22,8 @@ export default function Input({
   keyboardType,
   multiline,
   onPressIn,
-  rightText
+  rightText,
+  pointerEvents
 }) {
   return (
     <View style={(icon || rightText) && inputViewStyle}>
@@ -43,6 +44,7 @@ export default function Input({
         keyboardType={keyboardType}
         multiline={multiline}
         onPressIn={onPressIn}
+        pointerEvents={pointerEvents}
       />
       {icon && <Icon name={iconName} color={iconColor} size={20} />}
       {rightText && <Text style={{ color: "#777" }}>{rightText}</Text>}
