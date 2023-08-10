@@ -95,14 +95,6 @@ export default function MakeSale(props: any) {
     setRandomImage(images[randomIndex]);
   };
   const [randomImage, setRandomImage] = useState(images[0]);
-  useEffect(() => {
-    if (payoutLoaded && !payoutMethod) {
-      setVisible(true);
-      pickRandomImage();
-    } else {
-      setVisible(false);
-    }
-  }, [payoutLoaded]);
 
   const onClickPeriod = (selectedPeriod) => {
     setSelectedPeriod(selectedPeriod);
@@ -113,12 +105,6 @@ export default function MakeSale(props: any) {
   useEffect(() => {
     setSales(saleData);
   }, [saleData]);
-
-  useEffect(() => {
-    if (isFocused) {
-      refetch();
-    }
-  }, [isFocused]);
 
   // const getSalesApi = async () => {
   //   setIsFetching(true);
@@ -200,53 +186,6 @@ export default function MakeSale(props: any) {
   return (
     <View style={styles.container}>
       <Header title={t("Sales")} />
-      {!payoutMethod && !isLoading ? (
-        <Modal
-          visible={visible}
-          animationType="slide"
-          transparent={true}
-          // onRequestClose={onClose}
-        >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContainer}>
-              <View style={styles.notificationView}>
-                <Image
-                  source={require("../../../assets/images/notification.png")}
-                  style={styles.notificationImage}
-                />
-              </View>
-
-              <Image source={randomImage} style={styles.modalImage} />
-              <View style={styles.modalContent}>
-                <Text>
-                  {
-                    "You need to add a payout method before starting to make new Sale."
-                  }
-                </Text>
-              </View>
-              <View style={{ flexDirection: "row", alignSelf: "flex-end" }}>
-                <Button
-                  style={styles.closeButton}
-                  onPress={() => {
-                    setVisible(!visible);
-                    props.navigation.navigate("Payouts");
-                  }}
-                >
-                  <Text style={styles.closeButtonText}>
-                    {"Add payout method"}
-                  </Text>
-                </Button>
-                <Button
-                  onPress={() => setVisible(!visible)}
-                  style={styles.cancelButton}
-                >
-                  <Text style={styles.closeButtonText}>{"Cancel"}</Text>
-                </Button>
-              </View>
-            </View>
-          </View>
-        </Modal>
-      ) : null}
       <>
         <ScrollView
           style={styles.innerContainer}
@@ -320,28 +259,7 @@ export default function MakeSale(props: any) {
 
                 <Button
                   onPress={() => {
-                    if (payoutMethod?.id) {
                       props.navigation.navigate("Sale");
-                    } else {
-                      pickRandomImage();
-                      setVisible(!visible);
-                      // Alert.alert(
-                      //   t(
-                      //     "You need to add a payout method before starting to make ",
-                      //   ),
-                      //   "",
-                      //   [
-                      //     {
-                      //       text: t("Cancel"),
-                      //       style: "cancel",
-                      //     },
-                      //     {
-                      //       text: t("Add payout method"),
-                      //       onPress: () => props.navigation.navigate("Payouts"),
-                      //     },
-                      //   ],
-                      // );
-                    }
                   }}
                   style={styles.buttonBelow}
                 >

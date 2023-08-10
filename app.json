@@ -17,7 +17,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.popcard",
-      "buildNumber": "27"
+      "buildNumber": "28"
     },
     "android": {
       "googleServicesFile": "./google-services.json",

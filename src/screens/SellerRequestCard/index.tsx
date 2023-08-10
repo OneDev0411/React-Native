@@ -25,6 +25,7 @@ import {
 } from "../../../redux/cards/cardsApiSlice";
 import { hp } from "../../../utils";
 import { getFlagEmoji } from "../../helpers/misc";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function SellerRequestCard(props) {
   const _formik = useRef();
@@ -223,9 +224,8 @@ export default function SellerRequestCard(props) {
           <Header
             title={t("Request Cards")}
           />
-          <ScrollView
+          <KeyboardAwareScrollView
             style={[styles.container]}
-            keyboardShouldPersistTaps="always"
             showsVerticalScrollIndicator={false}
           >
 
@@ -255,6 +255,17 @@ export default function SellerRequestCard(props) {
                   touched,
                 }) => (
                   <View>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: '#777',
+                        marginBottom: 6,
+                      }}
+                    >
+                      {t(
+                        'Put in your shipping details and we will send you cards so you can start selling!'
+                      )}
+                    </Text>
                     <Text style={styles.credsFont}>{t("Country")}</Text>
                     <CountrySelector
                       containerButtonStyle={{
@@ -490,8 +501,6 @@ export default function SellerRequestCard(props) {
                 </TouchableOpacity>
               )}
             />
-          </ScrollView>
-
           <View
             style={[
               styles.buttonContainer,
@@ -512,6 +521,8 @@ export default function SellerRequestCard(props) {
               <Text style={styles.buttonText}>{t("Create")}</Text>
             </Button>
           </View>
+          </KeyboardAwareScrollView>
+
         </View>
       )
 

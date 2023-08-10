@@ -18,6 +18,7 @@ import {
 } from '../../../redux/cards/cardsApiSlice';
 import { hp } from '../../../utils';
 import { getFlagEmoji } from '../../helpers/misc';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 export default function RequestCards(props) {
 	const _formik = useRef();
@@ -128,9 +129,8 @@ export default function RequestCards(props) {
 				title={t('Request Cards')}
 				leftButton={() => props.navigation.goBack()}
 			/>
-			<ScrollView
+			<KeyboardAwareScrollView
 				style={[styles.container]}
-				keyboardShouldPersistTaps="always"
 				showsVerticalScrollIndicator={false}
 			>
 				<View style={styles.inputContainer}>
@@ -425,8 +425,6 @@ export default function RequestCards(props) {
 						</TouchableOpacity>
 					)}
 				/>
-			</ScrollView>
-
 			<View
 				style={[
 					styles.buttonContainer,
@@ -447,6 +445,8 @@ export default function RequestCards(props) {
 					<Text style={styles.buttonText}>{t('Create')}</Text>
 				</Button>
 			</View>
+			</KeyboardAwareScrollView>
+
 		</View>
 	) : (
 		<>
