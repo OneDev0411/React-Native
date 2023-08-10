@@ -3,6 +3,7 @@ import { Formik } from "formik";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
+  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -14,7 +15,7 @@ import CountrySelector from "react-native-country-picker-modal";
 import { ActivityIndicator } from "react-native-paper";
 import Toast from "react-native-root-toast";
 import * as yup from "yup";
-import Button from "../../../components/Button";
+import { default as Button, default as MyButton } from "../../../components/Button";
 import Header from "../../../components/Header";
 import Input from "../../../components/Input";
 import { tintColorDark } from "../../../constants/Colors";
@@ -30,13 +31,15 @@ export default function SellerRequestCard(props) {
   const { t, i18n } = useTranslation();
   const [show, setShow] = useState(false);
   const [cards_sold, setCardsSold] = useState(0);
-  const [cards_pending, setCardsPending] = useState(0);
+  const [cards_pending, setCardsPending] = useState(null);
   const [progress, setProgress] = useState(0);
   const [country, setCountry] = useState<any>({});
   const [countryCode, setCountryCode] = useState("");
   const [countryName, setCountryName] = useState("");
   const [countryFlag, setCountryFlag] = useState("");
   const [isEligible, setEligible] = useState(false);
+
+  const [showWelcomeMsg, setShowWelcomeMsg] = useState(true);
 
   const [requestRefillCards, { isLoading }] = useRequestRefillCardsMutation();
   const {
@@ -54,21 +57,16 @@ export default function SellerRequestCard(props) {
 
   useEffect(() => {
     if (refillEligibilitySuccess) {
-      setCardsSold(refillEligibilityData?.cards_sold);
-      setCardsPending(
-        refillEligibilityData?.cards_fulfilled -
-        refillEligibilityData?.cards_sold,
-      );
 
-      const total_cards = refillEligibilityData?.cards_fulfilled;
-      const percentage = (
-        (refillEligibilityData?.cards_sold / total_cards) *
-        100
-      ).toFixed(2);
-      setProgress(Number(percentage));
+      const myPendingCards = !!refillEligibilityData?.cards_pending === false ? 0 : refillEligibilityData?.cards_pending
+
+      setTimeout(() => {
+        setCardsPending(myPendingCards);
+      }, 200);
+
       setEligible(refillEligibilityData?.eligible);
 
-      if (!refillEligibilityData?.eligible) {
+      if (!!myPendingCards) {
         props.navigation.replace("SellerRequestCardsPending");
       }
     }
@@ -139,318 +137,396 @@ export default function SellerRequestCard(props) {
 
   //
   return (
-    (!isEligible) ? (
+    (cards_pending === null) ? (
       <View style={{
         flex: 1,
         justifyContent: 'center'
       }}>
         <ActivityIndicator size="small" color={'black'} />
       </View>
-    ) : (<View style={{ flex: 1, backgroundColor: "white" }}>
-      <Header
-        title={t("Create New Request Card")}
-      />
-      <ScrollView
-        style={[styles.container]}
-        keyboardShouldPersistTaps="always"
-        showsVerticalScrollIndicator={false}
-      >
+    ) : (
+      (showWelcomeMsg && cards_pending === 0) ? (
+        <View style={{ flex: 1, backgroundColor: "white" }}>
+          <Header
+            title={t("Getting Started")}
+          />
 
-        <View style={styles.inputContainer}>
-          <Formik
-            innerRef={_formik}
-            key={countryCode} // add this prop for changes the country value
-            initialValues={{
-              country: countryName,
-              address1: "",
-              address2: "",
-              city: "",
-              phone: "",
-              zip: "",
-              cards_amount: "",
+          <Image
+            style={{
+              width: "100%",
+              height: "40%",
+
             }}
-            validationSchema={validationSchema}
-            validateOnBlur={false}
-            onSubmit={(values) => createCardReuest(values)}
-          >
-            {({
-              handleChange,
-              handleBlur,
-              handleSubmit,
-              values,
-              errors,
-              touched,
-            }) => (
-              <View>
-                <Text style={styles.credsFont}>{t("Country")}</Text>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    color: "#aaa",
-                    marginBottom: 6,
-                  }}
-                >
-                  {t(
-                    "Please select the country where you will make sales. This can be different from your country of nationality.",
-                  )}
-                </Text>
-                <CountrySelector
-                  containerButtonStyle={{
-                    ...styles.inputField,
-                    height: hp(6),
-                    width: "100%",
-                    justifyContent: "center",
-                  }}
-                  withAlphaFilter
-                  withCountryNameButton
-                  withFilter
-                  countryCode={country?.cca2}
-                  onSelect={(c) => {
-                    setCountry(c);
+            resizeMode="contain"
+            source={require("../../../assets/images/welcome2.png")}
+          />
 
-                    setCountryName(c.name);
-                    setCountryCode(c.callingCode[0]);
-
-                    handleChange("country")(c.name);
-
-                    if (c.callingCode[0]) {
-                      setCountryCode(`+${c.callingCode[0]}`);
-                    } else {
-                      setCountryCode("+1");
-                    }
-                    if (c.cca2) {
-                      setCountryFlag(getFlagEmoji(c.cca2));
-                    }
-                  }}
-                />
-                {errors.country && touched.country && (
-                  <Text style={styles.errorText}>{t(errors.country)}</Text>
-                )}
-
-                <Text style={styles.credsFont}>{t("Address Line 1")}</Text>
-                <Input
-                  onChangeText={(text) => handleChange("address1")(text)}
-                  onBlur={handleBlur("address1")}
-                  value={values.address1}
-                  style={styles.inputField}
-                  icon
-                  iconName="map-marker"
-                  inputViewStyle={styles.inputViewStyle}
-                  iconColor={"#ccc"}
-                  autoCapitalize={"none"}
-                  placeholder={t("Enter your address")}
-                />
-                {errors.address1 && touched.address1 && (
-                  <Text style={styles.errorText}>{errors.address1}</Text>
-                )}
-                <View style={{
-                  flexDirection: 'row',
-                  alignItems: 'center'
-                }}>
-                  <Text style={{ ...styles.credsFont, marginTop: 10 }}>
-                    {t("Address Line 2 ")}
-                  </Text>
-
-                  <Text style={{ ...styles.credsFont, marginTop: 10, fontSize: hp(1.5), color: 'gray' }}>
-                    {t("(optional)")}
-                  </Text>
-                </View>
-                <Input
-                  onChangeText={(text) => handleChange("address2")(text)}
-                  onBlur={handleBlur("address2")}
-                  value={values.address2}
-                  style={styles.inputField}
-                  icon
-                  iconName="map-marker"
-                  inputViewStyle={styles.inputViewStyle}
-                  iconColor={"#ccc"}
-                  autoCapitalize={"none"}
-                  placeholder={t("Enter your address")}
-                />
-                {errors.address2 && touched.address2 && (
-                  <Text style={styles.errorText}>{errors.address2}</Text>
-                )}
-                <Text style={{ ...styles.credsFont, marginTop: 10 }}>
-                  {t("City")}
-                </Text>
-                <Input
-                  onChangeText={(text) => handleChange("city")(text)}
-                  onBlur={handleBlur("city")}
-                  value={values.city}
-                  style={styles.inputField}
-                  icon
-                  iconName="city"
-                  inputViewStyle={styles.inputViewStyle}
-                  iconColor={"#ccc"}
-                  autoCapitalize={"none"}
-                  placeholder={t("Enter your city")}
-                />
-                {errors.city && touched.city && (
-                  <Text style={styles.errorText}>{errors.city}</Text>
-                )}
-
-                <View style={{
-                  flexDirection: 'row',
-                  alignItems: 'center'
-                }}>
-                  <Text style={{ ...styles.credsFont, marginTop: 10 }}>
-                    {t("Phone number ")}
-                  </Text>
-
-                  <Text style={{ ...styles.credsFont, marginTop: 10, fontSize: hp(1.5), color: 'gray' }}>
-                    {t("(optional)")}
-                  </Text>
-                </View>
-                <TouchableOpacity
-                  style={[
-                    styles.inputViewStyle,
-                    {
-                      justifyContent: "center",
-                      alignItems: "center",
-                      // backgroundColor: "#989811"
-                    },
-                  ]}
-                  onPress={() => setShow(true)}
-                >
-                  {countryCode ? (
-                    <Text style={{ width: "20%", marginLeft: 10 }}>
-                      {countryFlag + " " + countryCode}
-                    </Text>
-                  ) : (
-                    <Text style={{ width: "15%", marginLeft: 10 }}>🏳️ +0</Text>
-                  )}
-                  <Input
-                    onChangeText={(text: string) => handleChange("phone")(text)}
-                    value={values.phone}
-                    style={{
-                      ...styles.inputField,
-                      width: countryCode ? "95%" : "90%",
-                    }}
-                    icon
-                    iconColor={"#ccc"}
-                    iconName="phone"
-                    inputViewStyle={{
-                      // ...styles.inputViewStyle,
-                      flexDirection: "row",
-                      alignItems: "center",
-                      borderRadius: 10,
-                      backgroundColor: "#f9f9f9",
-
-                      // marginTop: 10,
-                      width: countryCode ? "70%" : "80%",
-                    }}
-                    autoCapitalize={"none"}
-                    placeholder={t("Phone number")}
-                    keyboardType="number-pad"
-                  // onPressIn={() => setShow(true)}
-                  />
-                </TouchableOpacity>
-                {errors.phone && touched.phone && (
-                  <Text style={styles.errorText}>{errors.phone}</Text>
-                )}
-
-                <View style={{
-                  flexDirection: 'row',
-                  alignItems: 'center'
-                }}>
-                  <Text style={{ ...styles.credsFont, marginTop: 10 }}>
-                    {t("Zip Code ")}
-                  </Text>
-
-                  <Text style={{ ...styles.credsFont, marginTop: 10, fontSize: hp(1.5), color: 'gray' }}>
-                    {t("(optional)")}
-                  </Text>
-                </View>
-
-                <Input
-                  onChangeText={(text) => handleChange("zip")(text)}
-                  onBlur={handleBlur("zip")}
-                  value={values.zip}
-                  style={styles.inputField}
-                  icon
-                  iconName="math-norm-box"
-                  inputViewStyle={styles.inputViewStyle}
-                  iconColor={"#ccc"}
-                  autoCapitalize={"none"}
-                  keyboardType="number-pad"
-                  placeholder={t("Enter your zip code")}
-                />
-                {errors.zip && touched.zip && (
-                  <Text style={styles.errorText}>{errors.zip}</Text>
-                )}
-                <Text style={{ ...styles.credsFont, marginTop: 10 }}>
-                  {t("Cards Amount")}
-                </Text>
-                <Input
-                  onChangeText={(text) => handleChange("cards_amount")(text)}
-                  onBlur={handleBlur("cards_amount")}
-                  value={values.cards_amount}
-                  style={styles.inputField}
-                  icon
-                  iconName="numeric"
-                  inputViewStyle={styles.inputViewStyle}
-                  iconColor={"#ccc"}
-                  autoCapitalize={"none"}
-                  keyboardType="number-pad"
-                  placeholder={t("Enter the card amount")}
-                />
-                {errors.cards_amount && touched.cards_amount && (
-                  <Text style={styles.errorText}>{errors.cards_amount}</Text>
-                )}
-              </View>
-            )}
-          </Formik>
-        </View>
-
-        <CountryPicker
-          show={show}
-          style={{
-            modal: {
-              marginTop: 300,
-              height: 350,
-            },
-          }}
-          onBackdropPress={() => setShow(false)}
-          onRequestClose={() => setShow(false)}
-          itemTemplate={(item) => (
-            <TouchableOpacity
-              onPress={() => {
-                setCountryCode(item?.item?.dial_code);
-                setCountryFlag(item?.item?.flag);
-                setShow(false);
+          <View>
+            <Text
+              style={{
+                fontSize: 22,
+                textAlign: "center",
+                fontWeight: "500",
+                marginTop: 20,
+                padding: 20,
               }}
-              style={{ margin: 5, flex: 1, backgroundColor: "white" }}
             >
-              <View style={styles.countryContainer}>
-                <Text>{item.item.flag}</Text>
-                <Text style={{ marginLeft: 15 }}>{item.name}</Text>
-              </View>
-            </TouchableOpacity>
-          )}
-        />
-      </ScrollView>
+              Welcome to the Popcard App.
+            </Text>
+            <Text
+              style={{
+                fontSize: 16,
+                textAlign: "center",
+                fontWeight: "500",
 
-      <View
-        style={[
-          styles.buttonContainer,
-          {
-            backgroundColor: "white",
-          },
-        ]}
-      >
-        <Button
-          style={styles.button}
-          onPress={() => {
-            _formik?.current.handleSubmit();
-          }}
-          isLoading={isLoading}
-          disabled={isLoading}
-          loaderColor={{ color: "white" }}
-        >
-          <Text style={styles.buttonText}>{t("Create")}</Text>
-        </Button>
-      </View>
-    </View>)
+                padding: 20,
+              }}
+            >Thanks for signing up. In order to start to sell you can request your starter pack.</Text>
+          </View>
+
+          <View style={{
+            flex: 1,
+            width: '90%',
+            justifyContent: 'flex-end',
+            alignSelf: 'center'
+          }}>
+            <MyButton
+              style={{
+                backgroundColor: tintColorDark,
+                borderRadius: hp(5),
+                height: hp(7),
+                width: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+
+                marginBottom: hp(3),
+              }}
+              onPress={() => {
+                setShowWelcomeMsg(false);
+
+              }}
+
+
+            >
+              <Text style={{
+                color: "white",
+                fontSize: hp(2),
+                fontWeight: "700",
+              }}>
+                {t("Continue",)}
+              </Text>
+            </MyButton>
+          </View>
+        </View>
+      ) : (
+        <View style={{ flex: 1, backgroundColor: "white" }}>
+          <Header
+            title={t("Create New Request Card")}
+          />
+          <ScrollView
+            style={[styles.container]}
+            keyboardShouldPersistTaps="always"
+            showsVerticalScrollIndicator={false}
+          >
+
+            <View style={styles.inputContainer}>
+              <Formik
+                innerRef={_formik}
+                key={countryCode} // add this prop for changes the country value
+                initialValues={{
+                  country: countryName,
+                  address1: "",
+                  address2: "",
+                  city: "",
+                  phone: "",
+                  zip: "",
+                  cards_amount: "",
+                }}
+                validationSchema={validationSchema}
+                validateOnBlur={false}
+                onSubmit={(values) => createCardReuest(values)}
+              >
+                {({
+                  handleChange,
+                  handleBlur,
+                  handleSubmit,
+                  values,
+                  errors,
+                  touched,
+                }) => (
+                  <View>
+                    <Text style={styles.credsFont}>{t("Country")}</Text>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: "#aaa",
+                        marginBottom: 6,
+                      }}
+                    >
+                      {t(
+                        "Please select the country where you will make sales. This can be different from your country of nationality.",
+                      )}
+                    </Text>
+                    <CountrySelector
+                      containerButtonStyle={{
+                        ...styles.inputField,
+                        height: hp(6),
+                        width: "100%",
+                        justifyContent: "center",
+                      }}
+                      withAlphaFilter
+                      withCountryNameButton
+                      withFilter
+                      countryCode={country?.cca2}
+                      onSelect={(c) => {
+                        setCountry(c);
+
+                        setCountryName(c.name);
+                        setCountryCode(c.callingCode[0]);
+
+                        handleChange("country")(c.name);
+
+                        if (c.callingCode[0]) {
+                          setCountryCode(`+${c.callingCode[0]}`);
+                        } else {
+                          setCountryCode("+1");
+                        }
+                        if (c.cca2) {
+                          setCountryFlag(getFlagEmoji(c.cca2));
+                        }
+                      }}
+                    />
+                    {errors.country && touched.country && (
+                      <Text style={styles.errorText}>{t(errors.country)}</Text>
+                    )}
+
+                    <Text style={styles.credsFont}>{t("Address Line 1")}</Text>
+                    <Input
+                      onChangeText={(text) => handleChange("address1")(text)}
+                      onBlur={handleBlur("address1")}
+                      value={values.address1}
+                      style={styles.inputField}
+                      icon
+                      iconName="map-marker"
+                      inputViewStyle={styles.inputViewStyle}
+                      iconColor={"#ccc"}
+                      autoCapitalize={"none"}
+                      placeholder={t("Enter your address")}
+                    />
+                    {errors.address1 && touched.address1 && (
+                      <Text style={styles.errorText}>{errors.address1}</Text>
+                    )}
+                    <View style={{
+                      flexDirection: 'row',
+                      alignItems: 'center'
+                    }}>
+                      <Text style={{ ...styles.credsFont, marginTop: 10 }}>
+                        {t("Address Line 2 ")}
+                      </Text>
+
+                      <Text style={{ ...styles.credsFont, marginTop: 10, fontSize: hp(1.5), color: 'gray' }}>
+                        {t("(optional)")}
+                      </Text>
+                    </View>
+                    <Input
+                      onChangeText={(text) => handleChange("address2")(text)}
+                      onBlur={handleBlur("address2")}
+                      value={values.address2}
+                      style={styles.inputField}
+                      icon
+                      iconName="map-marker"
+                      inputViewStyle={styles.inputViewStyle}
+                      iconColor={"#ccc"}
+                      autoCapitalize={"none"}
+                      placeholder={t("Enter your address")}
+                    />
+                    {errors.address2 && touched.address2 && (
+                      <Text style={styles.errorText}>{errors.address2}</Text>
+                    )}
+                    <Text style={{ ...styles.credsFont, marginTop: 10 }}>
+                      {t("City")}
+                    </Text>
+                    <Input
+                      onChangeText={(text) => handleChange("city")(text)}
+                      onBlur={handleBlur("city")}
+                      value={values.city}
+                      style={styles.inputField}
+                      icon
+                      iconName="city"
+                      inputViewStyle={styles.inputViewStyle}
+                      iconColor={"#ccc"}
+                      autoCapitalize={"none"}
+                      placeholder={t("Enter your city")}
+                    />
+                    {errors.city && touched.city && (
+                      <Text style={styles.errorText}>{errors.city}</Text>
+                    )}
+
+                    <View style={{
+                      flexDirection: 'row',
+                      alignItems: 'center'
+                    }}>
+                      <Text style={{ ...styles.credsFont, marginTop: 10 }}>
+                        {t("Phone number ")}
+                      </Text>
+
+                      <Text style={{ ...styles.credsFont, marginTop: 10, fontSize: hp(1.5), color: 'gray' }}>
+                        {t("(optional)")}
+                      </Text>
+                    </View>
+                    <TouchableOpacity
+                      style={[
+                        styles.inputViewStyle,
+                        {
+                          justifyContent: "center",
+                          alignItems: "center",
+                          // backgroundColor: "#989811"
+                        },
+                      ]}
+                      onPress={() => setShow(true)}
+                    >
+                      {countryCode ? (
+                        <Text style={{ width: "20%", marginLeft: 10 }}>
+                          {countryFlag + " " + countryCode}
+                        </Text>
+                      ) : (
+                        <Text style={{ width: "15%", marginLeft: 10 }}>🏳️ +0</Text>
+                      )}
+                      <Input
+                        onChangeText={(text: string) => handleChange("phone")(text)}
+                        value={values.phone}
+                        style={{
+                          ...styles.inputField,
+                          width: countryCode ? "95%" : "90%",
+                        }}
+                        icon
+                        iconColor={"#ccc"}
+                        iconName="phone"
+                        inputViewStyle={{
+                          // ...styles.inputViewStyle,
+                          flexDirection: "row",
+                          alignItems: "center",
+                          borderRadius: 10,
+                          backgroundColor: "#f9f9f9",
+
+                          // marginTop: 10,
+                          width: countryCode ? "70%" : "80%",
+                        }}
+                        autoCapitalize={"none"}
+                        placeholder={t("Phone number")}
+                        keyboardType="number-pad"
+                      // onPressIn={() => setShow(true)}
+                      />
+                    </TouchableOpacity>
+                    {errors.phone && touched.phone && (
+                      <Text style={styles.errorText}>{errors.phone}</Text>
+                    )}
+
+                    <View style={{
+                      flexDirection: 'row',
+                      alignItems: 'center'
+                    }}>
+                      <Text style={{ ...styles.credsFont, marginTop: 10 }}>
+                        {t("Zip Code ")}
+                      </Text>
+
+                      <Text style={{ ...styles.credsFont, marginTop: 10, fontSize: hp(1.5), color: 'gray' }}>
+                        {t("(optional)")}
+                      </Text>
+                    </View>
+
+                    <Input
+                      onChangeText={(text) => handleChange("zip")(text)}
+                      onBlur={handleBlur("zip")}
+                      value={values.zip}
+                      style={styles.inputField}
+                      icon
+                      iconName="math-norm-box"
+                      inputViewStyle={styles.inputViewStyle}
+                      iconColor={"#ccc"}
+                      autoCapitalize={"none"}
+                      keyboardType="number-pad"
+                      placeholder={t("Enter your zip code")}
+                    />
+                    {errors.zip && touched.zip && (
+                      <Text style={styles.errorText}>{errors.zip}</Text>
+                    )}
+                    <Text style={{ ...styles.credsFont, marginTop: 10 }}>
+                      {t("Cards Amount")}
+                    </Text>
+                    <Input
+                      onChangeText={(text) => handleChange("cards_amount")(text)}
+                      onBlur={handleBlur("cards_amount")}
+                      value={values.cards_amount}
+                      style={styles.inputField}
+                      icon
+                      iconName="numeric"
+                      inputViewStyle={styles.inputViewStyle}
+                      iconColor={"#ccc"}
+                      autoCapitalize={"none"}
+                      keyboardType="number-pad"
+                      placeholder={t("Enter the card amount")}
+                    />
+                    {errors.cards_amount && touched.cards_amount && (
+                      <Text style={styles.errorText}>{errors.cards_amount}</Text>
+                    )}
+                  </View>
+                )}
+              </Formik>
+            </View>
+
+            <CountryPicker
+              show={show}
+              style={{
+                modal: {
+                  marginTop: 300,
+                  height: 350,
+                },
+              }}
+              onBackdropPress={() => setShow(false)}
+              onRequestClose={() => setShow(false)}
+              itemTemplate={(item) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    setCountryCode(item?.item?.dial_code);
+                    setCountryFlag(item?.item?.flag);
+                    setShow(false);
+                  }}
+                  style={{ margin: 5, flex: 1, backgroundColor: "white" }}
+                >
+                  <View style={styles.countryContainer}>
+                    <Text>{item.item.flag}</Text>
+                    <Text style={{ marginLeft: 15 }}>{item.name}</Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+            />
+          </ScrollView>
+
+          <View
+            style={[
+              styles.buttonContainer,
+              {
+                backgroundColor: "white",
+              },
+            ]}
+          >
+            <Button
+              style={styles.button}
+              onPress={() => {
+                _formik?.current.handleSubmit();
+              }}
+              isLoading={isLoading}
+              disabled={isLoading}
+              loaderColor={{ color: "white" }}
+            >
+              <Text style={styles.buttonText}>{t("Create")}</Text>
+            </Button>
+          </View>
+        </View>
+      )
+
+    )
 
   );
 }
