@@ -16,6 +16,7 @@ import Toast from "react-native-root-toast";
 import { useSelector } from "react-redux";
 import { tintColorDark } from "../../../constants/Colors";
 import {
+  useDeleteSaleMutation,
   useGetClientInfoMutation,
   useGetSaleDetailQuery,
   useMarkAsPaidMutation,
@@ -36,6 +37,7 @@ export default function SaleDetail(props: any) {
     refetch,
   } = useGetSaleDetailQuery(props?.route?.params?.sale?._id);
 
+  const [deleteSale, deleteSaleResp] = useDeleteSaleMutation();
   const user = useSelector((state) => state?.auth?.loginUser);
 
   const [resendPaymentRequest, resendPaymentRequestResp] =
@@ -96,12 +98,50 @@ export default function SaleDetail(props: any) {
     }
   };
 
+  const deleteSaleAPI = async () => {
+    try {
+      const resp = await deleteSale(saleDetail.id);
+
+      if (!!resp?.error) {
+        Toast.show(t(resp?.error.data.message), {
+          duration: Toast.durations.LONG,
+          position: Toast.positions.BOTTOM,
+        });
+      } else {
+        Toast.show(t("Sale deleted successfully!"), {
+          duration: Toast.durations.LONG,
+          position: Toast.positions.BOTTOM,
+        });
+
+        props.navigation.goBack();
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
   return (
     <>
       <View style={styles.container}>
         <Header
           title={t("Sale Detail")}
           leftButton={() => props.navigation.goBack()}
+          rightButton={(saleDetail?.payment_link?.paid == false) && (() => {
+            Alert.alert(t("Are you sure you want to cancel this sale ? This action is irreversible"), "", [
+              {
+                text: t("Cancel")!,
+                style: "cancel",
+              },
+              {
+                text: t("Yes")!,
+                style: "destructive",
+                onPress: () => {
+                  deleteSaleAPI();
+                },
+              },
+            ]);
+          })
+          }
         />
         {isLoading ? (
           <View style={styles.activityIndicator}>
