@@ -1,23 +1,26 @@
-import { StyleSheet, View, Image, ActivityIndicator } from "react-native";
-import React from "react";
-import { formatDateTime, hp, wp } from "../../../utils";
-import { useEffect, useState } from "react";
-import Header from "../../../components/Header";
-import Button from "../../../components/Button";
-import Text from "../../../components/Text";
-
+import React, { useEffect, useState } from "react";
 import {
-  // useGetSaleDetailMutation,
-  useGetSaleDetailQuery,
-  useResendPaymentRequestMutation,
-  useGetClientInfoMutation,
-  useMarkAsPaidMutation,
-} from "../../../redux/sale/saleApiSlice";
-import { tintColorDark } from "../../../constants/Colors";
-import RNModal from "react-native-modal";
-import Toast from "react-native-root-toast";
+  ActivityIndicator,
+  Alert,
+  Image,
+  StyleSheet,
+  View,
+} from "react-native";
+import Button from "../../../components/Button";
+import Header from "../../../components/Header";
+import Text from "../../../components/Text";
+import { formatDateTime, hp, wp } from "../../../utils";
+
 import { AirbnbRating } from "react-native-ratings";
+import Toast from "react-native-root-toast";
 import { useSelector } from "react-redux";
+import { tintColorDark } from "../../../constants/Colors";
+import {
+  useGetClientInfoMutation,
+  useGetSaleDetailQuery,
+  useMarkAsPaidMutation,
+  useResendPaymentRequestMutation,
+} from "../../../redux/sale/saleApiSlice";
 import { shortenString } from "../../helpers/misc";
 
 import { useTranslation } from "react-i18next";
@@ -32,6 +35,7 @@ export default function SaleDetail(props: any) {
     isLoading,
     refetch,
   } = useGetSaleDetailQuery(props?.route?.params?.sale?._id);
+
   const user = useSelector((state) => state?.auth?.loginUser);
 
   const [resendPaymentRequest, resendPaymentRequestResp] =

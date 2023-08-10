@@ -1,34 +1,34 @@
+import React, { useEffect, useRef, useState } from "react";
 import {
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  Linking,
-  Share,
-  Platform,
   Alert,
   FlatList,
+  Linking,
+  Platform,
+  ScrollView,
+  Share,
+  StyleSheet,
+  TouchableOpacity,
 } from "react-native";
-import React, { useEffect, useState, useRef } from "react";
 
 import MIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { useIsFocused } from "@react-navigation/native";
 import moment from "moment";
+import { useTranslation } from "react-i18next";
+import RNModal from "react-native-modal";
 import { useDispatch, useSelector } from "react-redux";
 import Header from "../../../components/Header";
 import { Text, View } from "../../../components/Themed";
+import { tintColorDark, tintColorLight } from "../../../constants/Colors";
+import { apiSlice } from "../../../redux/api/apiSlice";
 import { useLogoutUserMutation } from "../../../redux/auth/authApiSlice";
 import { logOut } from "../../../redux/auth/authSlice";
-import { hp, wp } from "../../../utils";
+import { setLanguage } from "../../../redux/language/languageSlice";
 import {
   useGetCurrentUserQuery,
   useGetPayoutMethodQuery,
 } from "../../../redux/user/userApiSlice";
-import { useIsFocused } from "@react-navigation/native";
-import { apiSlice } from "../../../redux/api/apiSlice";
-import RNModal from "react-native-modal";
-import { useTranslation } from "react-i18next";
-import { tintColorDark, tintColorLight } from "../../../constants/Colors";
-import { setLanguage } from "../../../redux/language/languageSlice";
 import { setExpoPushToken } from "../../../redux/user/userSlice";
+import { hp, wp } from "../../../utils";
 import { cancelNotification } from "../../../utils/notifications";
 
 const LangModal: React.FC<{
@@ -104,11 +104,19 @@ export default function Settings(props: any) {
   const refreshToken = useSelector((state) => state?.auth?.refreshToken?.token);
   const user = useSelector((state) => state?.auth?.loginUser);
   const expoPushToken = useSelector((state) => state?.user?.expoPushToken);
-  const { data: currentUser, refetch: refetchUser } = useGetCurrentUserQuery();
+  const {
+    data: currentUser,
+    refetch: refetchUser,
+    isLoading: useLoading,
+  } = useGetCurrentUserQuery();
 
   const { data: payouts, isError, refetch } = useGetPayoutMethodQuery();
 
   const [logoutUser, { isLoading }] = useLogoutUserMutation();
+
+  useEffect(() => {
+    refetchUser();
+  }, [focused]);
 
   const logoutApi = async () => {
     const data = {
@@ -222,6 +230,29 @@ export default function Settings(props: any) {
                 <MIcons name="wallet-outline" size={20} />
               </View>
               <Text style={styles.titleText}>{t("Payouts")}</Text>
+            </View>
+            <View style={styles.iconsView}>
+              <MIcons name="chevron-right" size={20} />
+            </View>
+          </TouchableOpacity>
+
+          <View style={styles.divider} />
+
+          <TouchableOpacity
+            style={styles.backgroundView}
+            onPress={() => {
+              if (currentUser?.role === "sellerWithoutCards") {
+                props?.navigation?.navigate("RequestCards");
+              } else {
+                props?.navigation?.navigate("AddRequestCard");
+              }
+            }}
+          >
+            <View style={styles.rowView}>
+              <View style={styles.iconView}>
+                <MIcons name="book-plus" size={20} />
+              </View>
+              <Text style={styles.titleText}>{t("Request more cards")}</Text>
             </View>
             <View style={styles.iconsView}>
               <MIcons name="chevron-right" size={20} />
