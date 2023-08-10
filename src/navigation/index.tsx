@@ -1,36 +1,44 @@
-import React, { useEffect } from "react";
-import { createStackNavigator } from "@react-navigation/stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import MIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { useSelector, useDispatch } from "react-redux";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createStackNavigator } from "@react-navigation/stack";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-import Signin from "../screens/Signin";
-import Register from "../screens/Register";
 import IdentityVerification from "../screens/IdentityVerification";
+import Register from "../screens/Register";
+import Signin from "../screens/Signin";
 
 import MakeSale from "../screens/MakeSale";
+import Referrals from "../screens/Referrals";
+import Sale from "../screens/Sale";
 import SaleDetail from "../screens/SaleDetail";
 import Settings from "../screens/Settings";
-import Sale from "../screens/Sale";
 import TakePayment from "../screens/TakePayment";
-import Referrals from "../screens/Referrals";
 
-import WriteCards from "../screens/WriteCards";
-import Payouts from "../screens/Payouts";
 import BankDetail from "../screens/BankDetail";
+import Payouts from "../screens/Payouts";
+import WriteCards from "../screens/WriteCards";
 
-import UserPayouts from "../screens/UserPayouts";
-import ChangeCurrency from "../screens/ChangeCurrency";
-import NotificationScreen from "../screens/Notifications";
-import Partners from "../screens/Partners";
-import PartnerDetail from "../screens/PartnerDetail";
+import Constants from "expo-constants";
+import { isDevice } from "expo-device";
+import * as Notifications from "expo-notifications";
+import { useTranslation } from "react-i18next";
+import { Linking, Platform } from "react-native";
+import { setReferralCode } from "../../redux/auth/authSlice";
 import {
   useGetUserEmployeeQuery,
   useUpdateNotificationSettingsMutation,
 } from "../../redux/user/userApiSlice";
-import * as Notifications from "expo-notifications";
-import Constants from "expo-constants";
+import { setExpoPushToken } from "../../redux/user/userSlice";
+import { scheduleSaleReminderNotification } from "../../utils/notifications";
+import ForgotPassword from "../screens/ForgotPassword";
+import NotificationScreen from "../screens/Notifications";
+import PartnerDetail from "../screens/PartnerDetail";
+import Partners from "../screens/Partners";
+import SellerRequestCard from "../screens/SellerRequestCard";
+import SellerRequestCardPending from "../screens/SellerRequestCardPending";
+import UserPayouts from "../screens/UserPayouts";
 const Stack = createStackNavigator();
 
 const Tab = createBottomTabNavigator();
@@ -200,6 +208,21 @@ function AppStack() {
 	);
 }
 
+function AppSellerStack() {
+  return (
+    <Stack.Navigator
+      initialRouteName={"SellerRequestCards"}
+      screenOptions={({ route, navigation }) => ({
+        headerShown: false,
+      })}
+    >
+      <Stack.Screen name="SellerRequestCards" component={SellerRequestCard} />
+      <Stack.Screen name="SellerRequestCardsPending" component={SellerRequestCardPending} />
+
+    </Stack.Navigator>
+  );
+}
+
 export default function StackNavigator(props: any) {
   const loginUser = useSelector((state) => state?.auth?.loginUser);
   const refreshToken = useSelector((state) => state?.auth?.refreshToken);
@@ -297,8 +320,11 @@ export default function StackNavigator(props: any) {
       {loginUser && Object.keys(loginUser).length === 0 ? (
         <Stack.Screen name="AuthStack" component={AuthStack} />
       ) : (
-        <Stack.Screen name="AppStack" component={AppStack} />
+        (loginUser?.role === 'sellerWithoutCards') ? (<Stack.Screen name="AppSellerStack" component={AppSellerStack} />) : (
+          <Stack.Screen name="AppStack" component={AppStack} />
+        )
       )}
+
     </Stack.Navigator>
   );
 }
