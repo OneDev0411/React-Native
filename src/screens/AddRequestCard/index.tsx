@@ -129,17 +129,16 @@ export default function AddRequestCard(props) {
                   item?.status === "approved" ? `#2fbc362b` : `#FE6E002B`,
                 borderWidth: 1,
                 borderColor:
-                  item?.status === "approved" ? `#21c729` : `#FE6E00`,
+                item?.status === "approved" ? `#21c729` : item.status == 'rejected' ? `#ff0019` : `#FE6E00`,
               }}
             >
               <Text
                 style={{
-                  color: item?.status === "approved" ? "#21c729" : "#FE6E00",
-                  textTransform: "capitalize",
+                  color: item?.status === "approved" ? "#21c729" : item.status == 'rejected'? '#ff0019' : "#FE6E00",                  textTransform: "capitalize",
                   fontSize: 12,
                 }}
               >
-                {t(item.status == "approved" ? "Fulfilled" : "Pending")}
+                {t(item.status == "approved" ? "Fulfilled" : item.status == "rejected" ? "Rejected" : "Pending")}
               </Text>
             </View>
           </View>
