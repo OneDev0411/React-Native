@@ -45,7 +45,7 @@ export default function UserPayouts(props: any) {
 			setPayoutsListData(
 				!!payoutsData && !!payoutsData.results && payoutsData.results.length > 0
 					? payoutsData.results
-					: []
+					: [],
 			);
 		} else if (!!payoutsData && !!payoutsData.results && payoutsData.results.length > 0) {
 			setPayoutsListData(payoutsListData.concat(payoutsData.results));

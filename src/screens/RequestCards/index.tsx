@@ -51,7 +51,7 @@ export default function RequestCards(props) {
 		if (refillEligibilitySuccess) {
 			setCardsSold(refillEligibilityData?.cards_sold);
 			setCardsPending(
-				refillEligibilityData?.cards_fulfilled - refillEligibilityData?.cards_sold
+				refillEligibilityData?.cards_fulfilled - refillEligibilityData?.cards_sold,
 			);
 
 			const total_cards = refillEligibilityData?.cards_fulfilled;
@@ -125,10 +125,7 @@ export default function RequestCards(props) {
 	//
 	return isEligible === true ? (
 		<View style={{ flex: 1, backgroundColor: 'white' }}>
-			<Header
-				title={t('Request Cards')}
-				leftButton={() => props.navigation.goBack()}
-			/>
+			<Header title={t('Request Cards')} leftButton={() => props.navigation.goBack()} />
 			<KeyboardAwareScrollView
 				style={[styles.container]}
 				showsVerticalScrollIndicator={false}
@@ -160,7 +157,7 @@ export default function RequestCards(props) {
 									}}
 								>
 									{t(
-										'Put in your shipping details and we will send you cards so you can start selling!'
+										'Put in your shipping details and we will send you cards so you can start selling!',
 									)}
 								</Text>
 								<Text style={styles.credsFont}>{t('Country')}</Text>
@@ -425,28 +422,27 @@ export default function RequestCards(props) {
 						</TouchableOpacity>
 					)}
 				/>
-			<View
-				style={[
-					styles.buttonContainer,
-					{
-						backgroundColor: 'white',
-					},
-				]}
-			>
-				<Button
-					style={styles.button}
-					onPress={() => {
-						_formik?.current.handleSubmit();
-					}}
-					isLoading={isLoading}
-					disabled={isLoading}
-					loaderColor={{ color: 'white' }}
+				<View
+					style={[
+						styles.buttonContainer,
+						{
+							backgroundColor: 'white',
+						},
+					]}
 				>
-					<Text style={styles.buttonText}>{t('Create')}</Text>
-				</Button>
-			</View>
+					<Button
+						style={styles.button}
+						onPress={() => {
+							_formik?.current.handleSubmit();
+						}}
+						isLoading={isLoading}
+						disabled={isLoading}
+						loaderColor={{ color: 'white' }}
+					>
+						<Text style={styles.buttonText}>{t('Create')}</Text>
+					</Button>
+				</View>
 			</KeyboardAwareScrollView>
-
 		</View>
 	) : (
 		<>
@@ -489,7 +485,7 @@ export default function RequestCards(props) {
 						>
 							{t('You need to sell')} {cards_pending}{' '}
 							{t(
-								'more cards in order to request new cards. Only paid sales are taken into account.'
+								'more cards in order to request new cards. Only paid sales are taken into account.',
 							)}
 						</Text>
 					</View>

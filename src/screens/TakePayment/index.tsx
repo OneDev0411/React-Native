@@ -26,7 +26,7 @@ export default function TakePayment(props: any) {
 			<View style={styles.container}>
 				<Header
 					title={t(
-						props?.route?.params?.fromScreen == undefined ? 'Take Payment' : 'Success'
+						props?.route?.params?.fromScreen == undefined ? 'Take Payment' : 'Success',
 					)}
 					leftButton={() => props.navigation.goBack()}
 				/>
@@ -61,7 +61,7 @@ export default function TakePayment(props: any) {
 						{t(
 							props?.route?.params?.fromScreen == undefined
 								? 'Your client has received a secure payment request in their email. Please ask the client to check his email to complete the payment. Offer to assist them with any questions or concerns they may have during the payment process.'
-								: 'Cards written successfully!'
+								: 'Cards written successfully!',
 						)}
 					</Text>
 					<Image

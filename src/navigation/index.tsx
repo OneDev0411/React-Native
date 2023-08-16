@@ -97,7 +97,7 @@ function TabStack(props: any) {
 				} else if (data.type === 'userReferred') {
 					props.navigation.navigate('Referrals');
 				}
-			}
+			},
 		);
 
 		return () => {
@@ -222,7 +222,7 @@ export default function StackNavigator(props: any) {
 
 	const getCurrentUser = async () => {
 		try {
-      console.log('getting /me user');
+			console.log('getting /me user');
 			const resp = await getUser();
 
 			if (resp?.data?.applicationStatus == 'approved') {
@@ -290,7 +290,7 @@ export default function StackNavigator(props: any) {
 				}
 			});
 		}
-    getCurrentUser();
+		getCurrentUser();
 	}, [refreshToken?.token]);
 
 	React.useEffect(() => {

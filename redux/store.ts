@@ -1,48 +1,48 @@
-import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import { persistReducer, persistStore } from "redux-persist";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { apiSlice } from "./api/apiSlice";
-import authReducer from "./auth/authSlice";
-import userReducer from "./user/userSlice";
-import saleReducer from "./sale/saleSlice";
-import languageReducer from "./language/languageSlice";
-import cardsReducer from "./cards/cardsSlice";
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import { persistReducer, persistStore } from 'redux-persist';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { apiSlice } from './api/apiSlice';
+import authReducer from './auth/authSlice';
+import userReducer from './user/userSlice';
+import saleReducer from './sale/saleSlice';
+import languageReducer from './language/languageSlice';
+import cardsReducer from './cards/cardsSlice';
 const rootReduer = combineReducers({
-  [apiSlice.reducerPath]: apiSlice.reducer,
-  auth: authReducer,
-  user: userReducer,
-  sale: saleReducer,
-  language: languageReducer,
-  cards: cardsReducer,
+	[apiSlice.reducerPath]: apiSlice.reducer,
+	auth: authReducer,
+	user: userReducer,
+	sale: saleReducer,
+	language: languageReducer,
+	cards: cardsReducer,
 });
 
 const persistConfig = {
-  key: "root",
-  storage: AsyncStorage,
-  whitelist: ["auth", "sale", "language", "cards"],
-  blacklist: [],
+	key: 'root',
+	storage: AsyncStorage,
+	whitelist: ['auth', 'sale', 'language', 'cards'],
+	blacklist: [],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReduer);
 
 const root = (state, action) => {
-  if (action.type === "auth/logOut") {
-    return persistedReducer(state, action);
+	if (action.type === 'auth/logOut') {
+		return persistedReducer(state, action);
 
-    // AsyncStorage.removeItem("persist:root");
-    // return persistedReducer(undefined, action);
-  } else {
-    return persistedReducer(state, action);
-  }
+		// AsyncStorage.removeItem("persist:root");
+		// return persistedReducer(undefined, action);
+	} else {
+		return persistedReducer(state, action);
+	}
 };
 export const store = configureStore({
-  reducer: root,
+	reducer: root,
 
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: false,
-    }).concat(apiSlice.middleware),
+	middleware: (getDefaultMiddleware) =>
+		getDefaultMiddleware({
+			serializableCheck: false,
+		}).concat(apiSlice.middleware),
 
-  // devTools: true
+	// devTools: true
 });
 export const persistor = persistStore(store);

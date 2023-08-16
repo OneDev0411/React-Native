@@ -14,7 +14,7 @@ export const scheduleSaleReminderNotification = async (overrideExisting: boolean
 	const notifications = await Notifications.getAllScheduledNotificationsAsync();
 
 	const saleReminderNotification = notifications.find(
-		(notification) => notification.identifier === 'sale-reminder'
+		(notification) => notification.identifier === 'sale-reminder',
 	);
 	if (!saleReminderNotification) {
 		// if not, schedule notification
@@ -41,7 +41,7 @@ export const rescheduleNotification = async (
 	title: string,
 	body: string,
 	data: any,
-	time: any
+	time: any,
 ) => {
 	await Notifications.cancelScheduledNotificationAsync(identifier);
 	const newIdentifier = await Notifications.scheduleNotificationAsync({

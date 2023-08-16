@@ -13,7 +13,7 @@ const Loader = () => {
 export default Loader;
 
 const styles = StyleSheet.create({
-    indicator: {
+	indicator: {
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',

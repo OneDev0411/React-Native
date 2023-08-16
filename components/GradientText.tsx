@@ -23,8 +23,8 @@ const GradientText = ({ children }: { children: string }) => {
 				</LinearGradient>
 			</Defs>
 			<Text fill="url(#rainbow)">
-                <TSpan fontSize={16}>{children}</TSpan>
-            </Text>
+				<TSpan fontSize={16}>{children}</TSpan>
+			</Text>
 		</Svg>
 	);
 };
