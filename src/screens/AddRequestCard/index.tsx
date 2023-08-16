@@ -1,12 +1,15 @@
+import { AntDesign } from "@expo/vector-icons";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { useIsFocused } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
+  Animated,
   FlatList,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { AnimatedFAB } from "react-native-paper";
@@ -34,6 +37,8 @@ export default function AddRequestCard(props) {
   const [approvedRequestCount, setApprovedRequestCount] = useState(0);
   const [pendingRequestCount, setPendingRequestCount] = useState(0);
 
+
+
   const onScroll = ({ nativeEvent }) => {
     const currentScrollPosition =
       Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
@@ -60,7 +65,7 @@ export default function AddRequestCard(props) {
     setApprovedRequestCount(approvedData?.length);
     setPendingRequestCount(
       parseInt(refillRequestsData?.results.length) -
-        parseInt(approvedData?.length),
+      parseInt(approvedData?.length),
     );
 
     const sortedResults = refillRequestsData?.results
@@ -129,17 +134,16 @@ export default function AddRequestCard(props) {
                   item?.status === "approved" ? `#2fbc362b` : `#FE6E002B`,
                 borderWidth: 1,
                 borderColor:
-                  item?.status === "approved" ? `#21c729` : `#FE6E00`,
+                  item?.status === "approved" ? `#21c729` : item.status == 'rejected' ? `#ff0019` : `#FE6E00`,
               }}
             >
               <Text
                 style={{
-                  color: item?.status === "approved" ? "#21c729" : "#FE6E00",
-                  textTransform: "capitalize",
+                  color: item?.status === "approved" ? "#21c729" : item.status == 'rejected' ? '#ff0019' : "#FE6E00", textTransform: "capitalize",
                   fontSize: 12,
                 }}
               >
-                {t(item.status == "approved" ? "Fulfilled" : "Pending")}
+                {t(item.status == "approved" ? "Fulfilled" : item.status == "rejected" ? "Rejected" : "Pending")}
               </Text>
             </View>
           </View>
@@ -150,6 +154,7 @@ export default function AddRequestCard(props) {
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Icon name={"map-marker"} color={tintColorDark} size={22} />
             <Text style={styles.text1}>{item.address1}</Text>
+
           </View>
         </View>
         <View style={styles.divider} />
