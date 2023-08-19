@@ -78,15 +78,15 @@ export default function SellerRequestCard(props) {
 		city: yup.string('Required').required('City is required'),
 		phone: yup.string('Required').matches(phoneRegExp, 'Phone number is not valid'),
 
-		cards_amount: yup.string('Required').required('Card amount is required'),
+		// cards_amount: yup.string('Required').required('Card amount is required'),
 	});
 
 	const createCardReuest = async (values: object) => {
 		try {
-			if (values?.cards_amount <= 50) {
+			// if (values?.cards_amount <= 50) {
 				var body = {
 					address1: values.address1,
-					cards_amount: values.cards_amount,
+					cards_amount: "5",
 					city: values.city,
 					country: values.country,
 				};
@@ -101,7 +101,6 @@ export default function SellerRequestCard(props) {
 				if (!!values?.zip) {
 					body.zip = values?.zip;
 				}
-
 				const resp = await requestRefillCards(body);
 
 				if (!!resp?.error) {
@@ -118,12 +117,12 @@ export default function SellerRequestCard(props) {
 						props.navigation.replace('SellerRequestCardsPending');
 					}
 				}
-			} else {
-				Toast.show('Cards amount must be less than or equal to 50', {
-					duration: Toast.durations.LONG,
-					position: Toast.positions.BOTTOM,
-				});
-			}
+			// } else {
+			// 	Toast.show('Cards amount must be less than or equal to 50', {
+			// 		duration: Toast.durations.LONG,
+			// 		position: Toast.positions.BOTTOM,
+			// 	});
+			// }
 		} catch (e) {
 			console.log('creatCardError--->', e);
 		}
@@ -174,7 +173,7 @@ export default function SellerRequestCard(props) {
 					}}
 				>
 					Thanks for signing up. In order to start to sell you can request your starter
-					pack.
+					pack, it always consist of 5 cards.
 				</Text>
 			</View>
 
@@ -215,7 +214,7 @@ export default function SellerRequestCard(props) {
 		</View>
 	) : (
 		<View style={{ flex: 1, backgroundColor: 'white' }}>
-			<Header title={t('Request Cards')} />
+			<Header title={t('Request Starter Pack')} />
 			<KeyboardAwareScrollView
 				style={[styles.container]}
 				showsVerticalScrollIndicator={false}
@@ -231,13 +230,15 @@ export default function SellerRequestCard(props) {
 							city: '',
 							phone: '',
 							zip: '',
-							cards_amount: '',
+						
 						}}
 						validationSchema={validationSchema}
 						validateOnBlur={false}
-						onSubmit={(values) => createCardReuest(values)}
+						onSubmit={(values) =>
+							createCardReuest(values)}
 					>
 						{({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+						
 							<View>
 								<Text
 									style={{
@@ -462,7 +463,7 @@ export default function SellerRequestCard(props) {
 								{errors.zip && touched.zip && (
 									<Text style={styles.errorText}>{errors.zip}</Text>
 								)}
-								<Text style={{ ...styles.credsFont, marginTop: 10 }}>
+								{/* <Text style={{ ...styles.credsFont, marginTop: 10 }}>
 									{t('Cards Amount')}
 								</Text>
 								<Input
@@ -480,7 +481,7 @@ export default function SellerRequestCard(props) {
 								/>
 								{errors.cards_amount && touched.cards_amount && (
 									<Text style={styles.errorText}>{errors.cards_amount}</Text>
-								)}
+								)} */}
 							</View>
 						)}
 					</Formik>
