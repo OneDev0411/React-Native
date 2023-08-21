@@ -11,9 +11,10 @@ export default function CollapsibleView({ item }: any) {
       <Accordion
         activeSections={active}
         sections={['1']}
+
         // renderSectionTitle={this._renderSectionTitle}
         renderHeader={() => (<>
-        {item.note?  <TouchableOpacity
+        {item.note?<View style={{width:'100%',justifyContent:'flex-end',flexDirection: 'row', alignSelf: 'flex-end',backgroundColor:"white"}}><TouchableOpacity
             onPress={() => {
               active.length ? setactive([]) : setactive([0]);
             }}
@@ -25,7 +26,7 @@ export default function CollapsibleView({ item }: any) {
               color={'black'}
               style={styles.icon}
             />
-          </TouchableOpacity>:null}
+          </TouchableOpacity></View>:null}
           </>
         )}
         renderContent={(val) => {
@@ -48,7 +49,7 @@ export default function CollapsibleView({ item }: any) {
   );
 }
 const styles = StyleSheet.create({
-  container: { flexDirection: 'row', alignSelf: 'flex-end' },
+  container: {  },
   icon:{ marginRight: 15, opacity: 1 },
   animatedtext:{ textAlign: 'left', width: "85%", paddingHorizontal: 4 },
   note:{ fontSize: 12, fontWeight: 'bold', lineHeight: 18 },
