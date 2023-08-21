@@ -112,7 +112,6 @@ export default function AddRequestCard(props) {
 				<View
 					style={{
 						paddingHorizontal: 20,
-						
 					}}
 				>
 					<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
