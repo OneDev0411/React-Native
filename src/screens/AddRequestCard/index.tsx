@@ -112,6 +112,7 @@ export default function AddRequestCard(props) {
 				<View
 					style={{
 						paddingHorizontal: 20,
+						
 					}}
 				>
 					<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -248,7 +249,7 @@ export default function AddRequestCard(props) {
 						extraData={cardRequests}
 						onScroll={onScroll}
 						contentContainerStyle={{
-							paddingBottom: 20,
+							paddingBottom: 150,
 						}}
 						showsVerticalScrollIndicator={false}
 						style={{
