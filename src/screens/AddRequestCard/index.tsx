@@ -18,6 +18,10 @@ import TabButtons from '../../../components/TabButtons';
 import { tintColorDark } from '../../../constants/Colors';
 import { useGetRefillRequestsQuery } from '../../../redux/cards/cardsApiSlice';
 import { formatDateTime, hp, wp } from '../../../utils';
+import Accordion from 'react-native-collapsible/Accordion';
+
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import CollapsibleView from './CollapsibleView';
 
 export default function AddRequestCard(props) {
 	const { t, i18n } = useTranslation();
@@ -165,7 +169,9 @@ export default function AddRequestCard(props) {
 						<Icon name={'map-marker'} color={tintColorDark} size={22} />
 						<Text style={styles.text1}>{item.address1}</Text>
 					</View>
+					<CollapsibleView item={item} />
 				</View>
+
 				<View style={styles.divider} />
 			</View>
 		);
@@ -242,7 +248,7 @@ export default function AddRequestCard(props) {
 						extraData={cardRequests}
 						onScroll={onScroll}
 						contentContainerStyle={{
-							paddingBottom: 20,
+							paddingBottom: 150,
 						}}
 						showsVerticalScrollIndicator={false}
 						style={{
