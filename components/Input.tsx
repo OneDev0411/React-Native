@@ -24,7 +24,7 @@ export default function Input({
 	onPressIn,
 	rightText,
 	pointerEvents,
-}) {
+}: any) {
 	return (
 		<View style={(icon || rightText) && inputViewStyle}>
 			<TextInput

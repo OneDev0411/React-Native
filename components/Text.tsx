@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, StyleSheet } from 'react-native';
 // import { useThemeAwareObject } from "theme";
 import { hp, wp } from '../utils';
-export default function CustomText({ children, style, onPress, numberOfLines }) {
+export default function CustomText({ children, style, onPress, numberOfLines }: any) {
 	// const createStyles = (theme) => {
 
 	// };
